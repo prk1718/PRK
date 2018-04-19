@@ -2,11 +2,15 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
 
 <AnchorPane xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
    <children>
@@ -147,6 +151,7 @@
                               <Button mnemonicParsing="false" prefHeight="31.0" prefWidth="31.0" GridPane.columnIndex="9" GridPane.rowIndex="9" />
                            </children>
                         </GridPane>
+                        <Text layoutX="157.0" layoutY="29.0" strokeMiterLimit="14.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Twoja plansza" />
                      </children>
                   </AnchorPane>
                   <AnchorPane prefHeight="400.0" prefWidth="400.0">
@@ -282,10 +287,42 @@
                               <Button mnemonicParsing="false" prefHeight="31.0" prefWidth="31.0" GridPane.columnIndex="9" GridPane.rowIndex="9" />
                            </children>
                         </GridPane>
+                        <Text layoutX="140.0" layoutY="29.0" strokeMiterLimit="14.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Plansza przeciwnika" />
                      </children></AnchorPane>
                </children>
             </HBox>
-            <HBox fx:id="HBoxUtils" layoutY="400.0" prefHeight="400.0" prefWidth="800.0" />
+            <HBox fx:id="HBoxUtils" layoutY="400.0" prefHeight="400.0" prefWidth="800.0">
+               <children>
+                  <VBox prefHeight="400.0" prefWidth="400.0">
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <HBox.margin>
+                        <Insets left="400.0" />
+                     </HBox.margin>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Chat">
+                           <VBox.margin>
+                              <Insets left="190.0" />
+                           </VBox.margin>
+                        </Text>
+                        <TextArea prefHeight="200.0" prefWidth="200.0">
+                           <VBox.margin>
+                              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                           </VBox.margin>
+                        </TextArea>
+                        <HBox prefHeight="100.0" prefWidth="200.0">
+                           <children>
+                              <TextField prefWidth="300.0" />
+                              <Button fx:id="sendMessageButton" mnemonicParsing="false" onAction="#sendMessageButtonAction" text="Wyślij" />
+                           </children>
+                           <padding>
+                              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                           </padding>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children></HBox>
          </children>
       </AnchorPane>
    </children>
