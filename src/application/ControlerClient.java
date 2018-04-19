@@ -1,61 +1,45 @@
 package application;
 
-import java.io.IOException;
-
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.text.Text;
-import javafx.stage.Stage;
 
-public class ControlerClient {
+public class ControlerClient
+{
+	private boolean isAppServer;
+	private Server server;
+	private Client client;
 
-	public boolean serverClient;
-    public Server svr;
-	public Klient kl;
+	@FXML
+	private Button sendMessageButton;
+	@FXML
+	private TextField textMessSend;
+	@FXML
+	private TextArea texMessResive;
 
-	
-	@FXML private Button sendMessageButton;
-	@FXML private TextField textMessSend;
-	@FXML private TextArea texMessResive;
-	
-	public void setServerClient(boolean svrCl)
+	public void setServerClient(boolean isApplicationAServer)
 	{
-		serverClient = svrCl;
-		
-		if(svrCl)
-		{
-			svr = new Server(texMessResive);
+		isAppServer = isApplicationAServer;
 
-		}else
+		if (isAppServer)
 		{
-			kl = new Klient(texMessResive);
-
+			server = new Server(texMessResive);
+		} else
+		{
+			client = new Client(texMessResive);
 		}
-		
 	}
-	
 
-
-	
 	@FXML
 	public void sendMessageButtonAction()
 	{
-		if(serverClient)
+		if (isAppServer)
 		{
-			svr.send(textMessSend.getText());
-    	
-
-			
-		}else
+			server.send(textMessSend.getText());
+		} else
 		{
-		    kl.send(textMessSend.getText());
-
-			
+			client.send(textMessSend.getText());
 		}
 	}
 }
