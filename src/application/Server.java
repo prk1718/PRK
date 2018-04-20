@@ -72,4 +72,10 @@ public class Server
 		}
 	}
 
+	public void addToTextArea(String message, TextArea text)
+	{
+		String currentText = text.getText();
+		text.setText(message + "\r\n" + currentText);
+	}
+
 }
