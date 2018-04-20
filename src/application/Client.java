@@ -54,11 +54,4 @@ public class Client
 	{
 		outputPrinter.println(info);
 	}
-
-	public void addToTextArea(String message, TextArea text)
-	{
-		String currentText = text.getText();
-		text.setText(message + "\r\n" + currentText);
-	}
-
 }

@@ -1,6 +1,5 @@
 package application;
 
-import java.util.Date;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
@@ -15,11 +14,7 @@ public class ControlerClient
 	@FXML
 	private Button sendMessageButton;
 	@FXML
-	private Button wyczyscButton;
-	@FXML
 	private TextField textMessSend;
-	@FXML
-	private TextField nickTextField;
 	@FXML
 	private TextArea texMessResive;
 
@@ -39,25 +34,12 @@ public class ControlerClient
 	@FXML
 	public void sendMessageButtonAction()
 	{
-		String nick = nickTextField.getText();
-		Date date = new Date();
-		@SuppressWarnings("deprecation")
-		String currentTime = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
-		String message = currentTime + " [" + nick + "]: " + textMessSend.getText();
 		if (isAppServer)
 		{
-			server.send(message);
-			server.addToTextArea(message, texMessResive);
+			server.send(textMessSend.getText());
 		} else
 		{
-			client.send(message);
-			client.addToTextArea(message, texMessResive);
+			client.send(textMessSend.getText());
 		}
-	}
-
-	@FXML
-	public void wyczyscButtonAction()
-	{
-		texMessResive.setText("");
 	}
 }
