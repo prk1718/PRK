@@ -102,7 +102,7 @@ public class Controler {
 		clientPort = portClientTextField.getText();
 		ipAdress = ipAdressClientTextField.getText();
 		if (!validatePort(clientPort) || !validateIp(ipAdress)) {
-			Alert alert = new Alert(AlertType.ERROR, "Nieprawidłowy port ", ButtonType.CLOSE);
+			Alert alert = new Alert(AlertType.ERROR, "Nieprawidłowy port lub adres IP ", ButtonType.CLOSE);
 			alert.showAndWait();
 			throw new ConnectException();
 		}
