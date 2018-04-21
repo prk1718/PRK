@@ -6,8 +6,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
-public class ControlerClient
-{
+public class ControlerClient {
 	private boolean isAppServer;
 	private Server server;
 	private Client client;
@@ -23,41 +22,34 @@ public class ControlerClient
 	@FXML
 	private TextArea texMessResive;
 
-	public void setServerClient(boolean isApplicationAServer)
-	{
+	public void setServerClient(boolean isApplicationAServer, String port, String ipAdress) {
 		isAppServer = isApplicationAServer;
 
-		if (isAppServer)
-		{
-			server = new Server(texMessResive);
-		} else
-		{
-			client = new Client(texMessResive);
+		if (isAppServer) {
+			server = new Server(texMessResive, port);
+		} else {
+			client = new Client(texMessResive, port, ipAdress);
 		}
 	}
 
 	@FXML
-	public void sendMessageButtonAction()
-	{
+	public void sendMessageButtonAction() {
 		String nick = nickTextField.getText();
 		Date date = new Date();
 		@SuppressWarnings("deprecation")
 		String currentTime = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
 		String message = currentTime + " [" + nick + "]: " + textMessSend.getText();
-		if (isAppServer)
-		{
+		if (isAppServer) {
 			server.send(message);
 			server.addToTextArea(message, texMessResive);
-		} else
-		{
+		} else {
 			client.send(message);
 			client.addToTextArea(message, texMessResive);
 		}
 	}
 
 	@FXML
-	public void wyczyscButtonAction()
-	{
+	public void wyczyscButtonAction() {
 		texMessResive.setText("");
 	}
 }
