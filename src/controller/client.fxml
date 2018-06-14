@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.ControlerClient">
+<AnchorPane xmlns="http://javafx.com/javafx/8.0.161" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.ControlerClient">
   <children>
     <AnchorPane prefHeight="800.0" prefWidth="800.0">
       <children>
@@ -20,7 +20,7 @@
           <children>
             <AnchorPane prefHeight="400.0" prefWidth="400.0">
               <children>
-                <GridPane prefHeight="350.0" prefWidth="350.0" AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="25.0">
+                <GridPane fx:id="mojGrid" prefHeight="350.0" prefWidth="350.0" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="25.0">
                   <children>
                     <Button mnemonicParsing="false" prefHeight="31.0" prefWidth="31.0" />
                     <Button mnemonicParsing="false" prefHeight="31.0" prefWidth="31.0" GridPane.rowIndex="1" />
@@ -156,7 +156,7 @@
             </AnchorPane>
             <AnchorPane prefHeight="400.0" prefWidth="400.0">
               <children>
-                <GridPane prefHeight="350.0" prefWidth="350.0" AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="25.0">
+                <GridPane fx:id="przeciwnikGrid" prefHeight="350.0" prefWidth="350.0" AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="25.0">
                   <children>
                     <Button mnemonicParsing="false" prefHeight="31.0" prefWidth="31.0" />
                     <Button mnemonicParsing="false" prefHeight="31.0" prefWidth="31.0" GridPane.rowIndex="1" />
