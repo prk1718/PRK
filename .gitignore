@@ -73,6 +73,8 @@ local.properties
 .idea/dictionaries
 *.iml
 .idea/*xml
+.bin/*
+.settings/*
 
 # Sensitive or high-churn files:
 .idea/**/dataSources/
