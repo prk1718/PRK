@@ -10,26 +10,43 @@ public class Client {
 	private BufferedReader inputReader;
 	private PrintStream outputPrinter;
 	private String textOdb = "";
+	private ErrorInfoDisplay errorInfoDisplay;
 
 	public Client(TextArea text, String portAdress, String ipAdress) {
-		new Thread(() -> {
-			try {
-				int port = Integer.parseInt(portAdress);
-				clientSocket = new Socket(ipAdress, port);
-
-				inputReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-				outputPrinter = new PrintStream(clientSocket.getOutputStream());
-				while (true) {
-					String buf = inputReader.readLine();
-					if (buf != null) {
-						textOdb = buf;
-						text.setText(textOdb + "\r\n" + text.getText());
-					}
-				}
-			} catch (IOException ex) {
-				ex.printStackTrace();
+		int port;
+		boolean isConnectOk = false;
+		try {
+			if (portAdress == null) {
+				errorInfoDisplay.showNoServerActive();
+				return;
 			}
-		}).start();
+			port = Integer.parseInt(portAdress);
+			isConnectOk = true;
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+			errorInfoDisplay.showWrongAdressNumber();
+
+			return;
+		}
+		if (isConnectOk) {
+			new Thread(() -> {
+				try {
+					clientSocket = new Socket(ipAdress, port);
+
+					inputReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+					outputPrinter = new PrintStream(clientSocket.getOutputStream());
+					while (true) {
+						String buf = inputReader.readLine();
+						if (buf != null) {
+							textOdb = buf;
+							text.setText(textOdb + "\r\n" + text.getText());
+						}
+					}
+				} catch (IOException ex) {
+					ex.printStackTrace();
+				}
+			}).start();
+		}
 	}
 
 	public void close() {
