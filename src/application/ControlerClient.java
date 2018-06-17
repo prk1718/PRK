@@ -1,5 +1,7 @@
 package application;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -8,13 +10,10 @@ import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -22,16 +21,20 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
+
+import javax.sound.sampled.*;
 
 public class ControlerClient {
-	private boolean isAppServer;
+
 	private Server server;
 	private Client client;
+	private boolean isAppServer;
+
 	public String[] getRowColMoj = new String[]{"", ""}, getRowColPrzeciwnik = new String[]{"", ""};
 	public Background backDefault = null;
 	private HashMap<String, Integer> statkiMap = new HashMap<>();
 	private HashMap<String, Integer> statkiPlacedMap = new HashMap<>();
+	private ErrorInfoDisplay errorInfoDisplay = new ErrorInfoDisplay();
 
 	@FXML
 	private Button sendMessageButton;
@@ -65,26 +68,14 @@ public class ControlerClient {
 		klikGridMojGetRowCol();
 		klikGridPrzeciwnikGetRowCol();
 
-		new Thread(new Runnable() {
+		new Thread(() -> {
+			try {
 
-			@Override
-			public void run() {
-				try {
+				Thread.sleep(100);
 
-					Thread.sleep(100);
+				Platform.runLater(() -> backDefault = ((Button) getButtonByRowColumnIndex(0, 1, mojGrid)).getBackground());
 
-					Platform.runLater(new Runnable() {
-						@Override
-						public void run() {
-
-							backDefault = ((Button) getButtonByRowColumnIndex(0, 1, mojGrid)).getBackground();
-
-						}
-					});
-
-				} catch (InterruptedException e) {
-
-				}
+			} catch (InterruptedException e) {
 
 			}
 
@@ -144,6 +135,10 @@ public class ControlerClient {
 
 		ustawIndexyGridMoj();
 
+		setPickedFieldIndex(mojGrid, getRowColMoj);
+	}
+
+	private void setPickedFieldIndex(GridPane mojGrid, String[] getRowColMoj) {
 		mojGrid.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
 
 			for (Node node : mojGrid.getChildren()) {
@@ -163,19 +158,7 @@ public class ControlerClient {
 
 		ustawIndexyGridPrzeciwnik();
 
-		przeciwnikGrid.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
-
-			for (Node node : przeciwnikGrid.getChildren()) {
-
-				if (node instanceof Button) {
-					if (node.getBoundsInParent().contains(e.getX(), e.getY())) {
-						getRowColPrzeciwnik[0] = "" + GridPane.getRowIndex(node);
-						getRowColPrzeciwnik[1] = "" + GridPane.getColumnIndex(node);
-						break;
-					}
-				}
-			}
-		});
+		setPickedFieldIndex(przeciwnikGrid, getRowColPrzeciwnik);
 	}
 
 
@@ -190,24 +173,19 @@ public class ControlerClient {
 					break;
 				}
 			}
-
 		}
-
 		return result;
 	}
 
 	public void ustawIndexyGridMoj() {
-		for (int i = 0; i <= 9; i++) {
-
-			for (int j = 0; j <= 9; j++) {
-				GridPane.setRowIndex(mojGrid.getChildren().get((i * 10) + j), i);
-				GridPane.setColumnIndex(mojGrid.getChildren().get((i * 10) + j), j);
-
-			}
-		}
+		setProperIndexForGrid(mojGrid);
 	}
 
 	public void ustawIndexyGridPrzeciwnik() {
+		setProperIndexForGrid(przeciwnikGrid);
+	}
+
+	private void setProperIndexForGrid(GridPane przeciwnikGrid) {
 		for (int i = 0; i <= 9; i++) {
 
 			for (int j = 0; j <= 9; j++) {
@@ -220,42 +198,33 @@ public class ControlerClient {
 
 	@FXML
 	public void akcjaCheck4() {
-
-		if (czteroM.isSelected() == true) {
-			dwuM.setSelected(false);
-			trzyM.setSelected(false);
-			jednoM.setSelected(false);
-
-		}
+		setRadioButtonsNotSelected();
+		czteroM.setSelected(true);
 	}
 
 	@FXML
 	public void akcjaCheck3() {
-		if (trzyM.isSelected() == true) {
-			dwuM.setSelected(false);
-			czteroM.setSelected(false);
-			jednoM.setSelected(false);
-
-		}
+		setRadioButtonsNotSelected();
+		trzyM.setSelected(true);
 	}
 
 	@FXML
 	public void akcjaCheck2() {
-		if (dwuM.isSelected() == true) {
-			czteroM.setSelected(false);
-			trzyM.setSelected(false);
-			jednoM.setSelected(false);
-
-		}
+		setRadioButtonsNotSelected();
+		dwuM.setSelected(true);
 	}
 
 	@FXML
 	public void akcjaCheck1() {
-		if (jednoM.isSelected() == true) {
-			dwuM.setSelected(false);
-			trzyM.setSelected(false);
-			czteroM.setSelected(false);
-		}
+		setRadioButtonsNotSelected();
+		jednoM.setSelected(true);
+	}
+
+	private void setRadioButtonsNotSelected() {
+		jednoM.setSelected(false);
+		dwuM.setSelected(false);
+		trzyM.setSelected(false);
+		czteroM.setSelected(false);
 	}
 
 	@FXML
@@ -313,25 +282,15 @@ public class ControlerClient {
 			getRowColPrzeciwnik[1] = "";
 
 		} else {
-			Alert alert = new Alert(AlertType.INFORMATION, "Należy zaznaczyć pozycję okrętu przeciwnika !!!", ButtonType.CLOSE);
-			alert.showAndWait();
+			errorInfoDisplay.pickEnemyPositionInfo();
 		}
-
-
 	}
 
 	public void weryfikacja(String mess, TextArea text) {
 
 		if (mess.indexOf("#mess#") != -1 && mess.indexOf("$mess$") != -1) {
 
-			Platform.runLater(new Runnable() {
-				@Override
-				public void run() {
-
-					text.setText(mess.substring(6, mess.length() - 6) + " \r\n" + text.getText());
-
-				}
-			});
+			Platform.runLater(() -> text.setText(mess.substring(6, mess.length() - 6) + " \r\n" + text.getText()));
 
 		} else if (mess.indexOf("#strzal#") != -1 && mess.indexOf("$strzal$") != -1) {
 			Platform.runLater(new Runnable() {
@@ -347,12 +306,14 @@ public class ControlerClient {
 						String mess = "#trafiony#" + messZapas[0] + "," + messZapas[1] + "$trafiony$";
 						if (isAppServer) {
 							server.send(mess);
+
+							playSound(this.getClass().getClassLoader(), "view/hit.wav");
 						} else {
 							client.send(mess);
-						}
 
-						Alert alert = new Alert(AlertType.INFORMATION, "Zostałeś trafiony strzela dalej przeciwnik !!!!", ButtonType.CLOSE);
-						alert.showAndWait();
+							playSound(this.getClass().getClassLoader(), "view/hit.wav");
+						}
+						errorInfoDisplay.youGotHitInfo();
 
 					} else {
 						((Button) getButtonByRowColumnIndex(Integer.parseInt(messZapas[0]), Integer.parseInt(messZapas[1]), mojGrid)).setBackground(new Background(new BackgroundFill(
@@ -363,56 +324,36 @@ public class ControlerClient {
 						String mess = "#pudlo#" + messZapas[0] + "," + messZapas[1] + "$pudlo$";
 						if (isAppServer) {
 							server.send(mess);
+							playSound(this.getClass().getClassLoader(), "view/miss.wav");
 						} else {
 							client.send(mess);
+							playSound(this.getClass().getClassLoader(), "view/miss.wav");
 						}
-
-						Alert alert = new Alert(AlertType.INFORMATION, "Przeciwnik spudłował twoja kolej !!!!", ButtonType.CLOSE);
-						alert.showAndWait();
-
-
+						errorInfoDisplay.enemyMissInfo();
 					}
-
 				}
 			});
-
-
 		} else if (mess.indexOf("#trafiony#") != -1 && mess.indexOf("$trafiony$") != -1) {
-			Platform.runLater(new Runnable() {
-				@Override
-				public void run() {
+			Platform.runLater(() -> {
 
-					String[] messZapas = mess.substring(10, mess.length() - 10).split(",");
-					((Button) getButtonByRowColumnIndex(Integer.parseInt(messZapas[0]), Integer.parseInt(messZapas[1]), przeciwnikGrid)).setBackground(new Background(new BackgroundFill(
-							Color.GRAY, null, null)));
+				String[] messZapas = mess.substring(10, mess.length() - 10).split(",");
+				((Button) getButtonByRowColumnIndex(Integer.parseInt(messZapas[0]), Integer.parseInt(messZapas[1]), przeciwnikGrid)).setBackground(new Background(new BackgroundFill(
+						Color.GRAY, null, null)));
 
-					Alert alert = new Alert(AlertType.INFORMATION, "Trafiłeś strzelaj dalej !!!!", ButtonType.CLOSE);
-					alert.showAndWait();
-
-				}
+				errorInfoDisplay.youHitInfo();
 			});
-
-
 		} else if (mess.indexOf("#pudlo#") != -1 && mess.indexOf("$pudlo$") != -1) {
-			Platform.runLater(new Runnable() {
-				@Override
-				public void run() {
+			Platform.runLater(() -> {
 
-					String[] messZapas = mess.substring(7, mess.length() - 7).split(",");
-					((Button) getButtonByRowColumnIndex(Integer.parseInt(messZapas[0]), Integer.parseInt(messZapas[1]), przeciwnikGrid)).setBackground(new Background(new BackgroundFill(
-							Color.LIGHTGREY, null, null)));
-					((Button) getButtonByRowColumnIndex(Integer.parseInt(messZapas[0]), Integer.parseInt(messZapas[1]), przeciwnikGrid)).setText("P");
+				String[] messZapas = mess.substring(7, mess.length() - 7).split(",");
+				((Button) getButtonByRowColumnIndex(Integer.parseInt(messZapas[0]), Integer.parseInt(messZapas[1]), przeciwnikGrid)).setBackground(new Background(new BackgroundFill(
+						Color.LIGHTGREY, null, null)));
+				((Button) getButtonByRowColumnIndex(Integer.parseInt(messZapas[0]), Integer.parseInt(messZapas[1]), przeciwnikGrid)).setText("P");
 
-					Alert alert = new Alert(AlertType.INFORMATION, "Spudłowałeś strzela przeciwnik !!!!", ButtonType.CLOSE);
-					alert.showAndWait();
-				}
+				errorInfoDisplay.youMissedInfo();
 			});
-
-
 		}
-
 	}
-
 
 	private void initStatkiPlacedMap() {
 		statkiPlacedMap.put("1", 0);
@@ -426,5 +367,17 @@ public class ControlerClient {
 		statkiMap.put("2", 3);
 		statkiMap.put("3", 2);
 		statkiMap.put("4", 1);
+	}
+
+	private void playSound(ClassLoader classLoader, String s) {
+		try {
+			URL url = classLoader.getResource(s);
+			AudioInputStream audioIn = AudioSystem.getAudioInputStream(url);
+			Clip clip = AudioSystem.getClip();
+			clip.open(audioIn);
+			clip.start();
+		} catch (IOException | UnsupportedAudioFileException | LineUnavailableException e) {
+			e.printStackTrace();
+		}
 	}
 }
