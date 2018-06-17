@@ -67,7 +67,7 @@ public class Controler {
 				primaryStage.setScene(scene);
 				primaryStage.setTitle("Klient");
 				primaryStage.show();
-				//main.primaryStage.close();
+				main.primaryStage.close();
 				
 			}else
 			{
@@ -112,7 +112,7 @@ public class Controler {
 				primaryStage.setTitle("Serwer");
 				primaryStage.show();
 				
-				//main.primaryStage.close();
+				main.primaryStage.close();
 			}
 		
 
