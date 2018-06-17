@@ -12,7 +12,7 @@ public class Server {
 	private PrintStream outputPrinter;
 	private String textOdb = "";
 
-	public Server(TextArea text, String portAdress) {
+	public Server(TextArea text, String portAdress,ControlerClient controler) {
 		new Thread(() -> {
 			try {
 				int port = Integer.parseInt(portAdress);
@@ -27,7 +27,8 @@ public class Server {
 					String buf = inputReader.readLine();
 					if (buf != null) {
 						textOdb = buf;
-						text.setText(textOdb + "\r\n" + text.getText());
+						controler.weryfikacja(textOdb,text);
+
 					}
 				}
 			} catch (BindException be) {

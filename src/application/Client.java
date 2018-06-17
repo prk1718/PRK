@@ -12,7 +12,7 @@ public class Client {
 	private String textOdb = "";
 	private ErrorInfoDisplay errorInfoDisplay;
 
-	public Client(TextArea text, String portAdress, String ipAdress) {
+	public Client(TextArea text, String portAdress, String ipAdress,ControlerClient controler) {
 		int port;
 		boolean isConnectOk = false;
 		try {
@@ -39,7 +39,7 @@ public class Client {
 						String buf = inputReader.readLine();
 						if (buf != null) {
 							textOdb = buf;
-							text.setText(textOdb + "\r\n" + text.getText());
+							controler.weryfikacja(textOdb,text);
 						}
 					}
 				} catch (IOException ex) {
