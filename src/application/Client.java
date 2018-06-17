@@ -3,10 +3,14 @@ package application;
 import java.io.*;
 import java.net.*;
 
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.Alert.AlertType;
 
 public class Client {
-	private Socket clientSocket;
+	private static Socket clientSocket;
 	private BufferedReader inputReader;
 	private PrintStream outputPrinter;
 	private String textOdb = "";
@@ -16,12 +20,24 @@ public class Client {
 		int port;
 		boolean isConnectOk = false;
 		try {
+
 			if (portAdress == null) {
+				Platform.runLater(new Runnable() {
+			        @Override
+			        public void run() {
+			      
+			        	Alert alert = new Alert(AlertType.INFORMATION, "Nie można się połączyć z serverem !!!!", ButtonType.CLOSE);
+						alert.showAndWait();
+			        	
+			        }
+				 });
 				errorInfoDisplay.showNoServerActive();
 				return;
 			}
+
 			port = Integer.parseInt(portAdress);
 			isConnectOk = true;
+
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
 			errorInfoDisplay.showWrongAdressNumber();
@@ -29,9 +45,10 @@ public class Client {
 			return;
 		}
 		if (isConnectOk) {
+
 			new Thread(() -> {
 				try {
-					clientSocket = new Socket(ipAdress, port);
+					
 
 					inputReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 					outputPrinter = new PrintStream(clientSocket.getOutputStream());
@@ -43,10 +60,39 @@ public class Client {
 						}
 					}
 				} catch (IOException ex) {
-					ex.printStackTrace();
+					//ex.printStackTrace();
+					Platform.runLater(new Runnable() {
+				        @Override
+				        public void run() {
+				      
+				        	Alert alert = new Alert(AlertType.INFORMATION, "Nie można się połączyć z serverem !!!!", ButtonType.CLOSE);
+							alert.showAndWait();
+				        	
+				        }
+					 });
+					
 				}
 			}).start();
 		}
+	}
+	
+	public static boolean sprKlient(String ipAdress,int port)
+	{
+		try
+		{
+		    InetAddress inet = InetAddress.getByName(ipAdress);		   
+		    if(inet.isReachable(2000)==true)
+		    {
+				clientSocket = new Socket(ipAdress, port);
+				return true;
+		    }
+			
+		}catch(Exception ex)
+		{
+			
+		}	
+		
+		return false;
 	}
 
 	public void close() {

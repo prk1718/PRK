@@ -4,6 +4,7 @@ import java.net.ConnectException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -40,7 +41,7 @@ public class Controler {
 	private TextField portServerTextField;
 
 	public void setMain(Main main) {
-		this.main = main;
+		this.main = main;		
 		ipAdressClientTextField.setText(DEFAULT_IP_ADRESS);
 		portClientTextField.setText(DEFAULT_PORT);
 		portServerTextField.setText(DEFAULT_PORT);
@@ -60,10 +61,29 @@ public class Controler {
 			pane.setBackground(new Background(bi));
 			ControlerClient cl = loader.getController();
 			getConnectionParametersForClient();
-			cl.setServerClient(false, serverPort, ipAdress);
-			primaryStage.setScene(scene);
-			primaryStage.setTitle("Klient");
-			primaryStage.show();
+			if(Client.sprKlient(ipAdress,Integer.parseInt(clientPort))==true)
+			{
+				cl.setServerClient(false, clientPort, ipAdress);
+				primaryStage.setScene(scene);
+				primaryStage.setTitle("Klient");
+				primaryStage.show();
+				//main.primaryStage.close();
+				
+			}else
+			{
+				
+				Platform.runLater(new Runnable() {
+			        @Override
+			        public void run() {
+			      
+			        	Alert alert = new Alert(AlertType.INFORMATION, "Nie można się połączyć z serverem !!!!", ButtonType.CLOSE);
+						alert.showAndWait();
+			        	
+			        }
+				 });
+			}
+			
+			
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -75,6 +95,7 @@ public class Controler {
 		FXMLLoader loader = new FXMLLoader(Main.class.getResource("/controller/client.fxml"));
 
 		try {
+			
 			Stage primaryStage = new Stage();
 			AnchorPane pane = loader.load();
 			primaryStage.setMinWidth(800.0);
@@ -84,10 +105,16 @@ public class Controler {
 			pane.setBackground(new Background(bi));
 			ControlerClient cl = loader.getController();
 			getConnectionParametersForServer();
-			cl.setServerClient(true, serverPort, null);
-			primaryStage.setScene(scene);
-			primaryStage.setTitle("Serwer");
-			primaryStage.show();
+			if(Server.sprSvr(serverPort)==true)
+			{
+				cl.setServerClient(true, serverPort, null);
+				primaryStage.setScene(scene);
+				primaryStage.setTitle("Serwer");
+				primaryStage.show();
+				
+				//main.primaryStage.close();
+			}
+		
 
 		} catch (Exception e) {
 			e.printStackTrace();
