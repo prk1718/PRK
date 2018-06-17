@@ -103,7 +103,7 @@ public class ControlerClient {
 
 	private void setImageAsBackground(Node node) {
 		Button button = (Button) node;
-		button.setStyle("-fx-border-style: none; -fx-border-width: 0px; -fx-border-insets: 0; -fx-font-size:4px; -fx-background-image: url('button.jpg')");
+		button.setStyle("-fx-border-style: none; -fx-border-width: 0px; -fx-border-insets: 0; -fx-font-size:1px; -fx-background-image: url('button.jpg')");
 		Image image = new Image(getClass().getResourceAsStream("../view/button.jpg"));
 		button.setGraphic(new ImageView(image));
 
