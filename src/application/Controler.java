@@ -13,7 +13,8 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.image.Image;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 public class Controler {
@@ -56,6 +57,8 @@ public class Controler {
 			primaryStage.setMinWidth(800.0);
 			primaryStage.setMinHeight(800.0);
 			Scene scene = new Scene(pane);
+			BackgroundImage bi = new BackgroundImage(new Image("view/background.jpg", 750, 750, false, true), BackgroundRepeat.ROUND, BackgroundRepeat.ROUND, BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
+			pane.setBackground(new Background(bi));
 			ControlerClient cl = loader.getController();
 			getConnectionParametersForClient();
 			if(Client.sprKlient(ipAdress,Integer.parseInt(clientPort))==true)
@@ -98,6 +101,8 @@ public class Controler {
 			primaryStage.setMinWidth(800.0);
 			primaryStage.setMinHeight(800.0);
 			Scene scene = new Scene(pane);
+			BackgroundImage bi = new BackgroundImage(new Image("view/background.jpg", 750, 750, false, true), BackgroundRepeat.ROUND, BackgroundRepeat.ROUND, BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
+			pane.setBackground(new Background(bi));
 			ControlerClient cl = loader.getController();
 			getConnectionParametersForServer();
 			if(Server.sprSvr(serverPort)==true)

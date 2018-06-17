@@ -20,4 +20,12 @@ public class ErrorInfoDisplay {
 				new ScrollPane(new TextArea("Proszę najpierw uruchomić serwer.")));
 		alert.showAndWait();
 	}
+
+	public void placingShipNotPossible() {
+		Alert alert = new Alert(Alert.AlertType.ERROR);
+		alert.setHeaderText("Nie można postawić statku!");
+		alert.getDialogPane().setExpandableContent(
+				new ScrollPane(new TextArea("Statek nie może zostać postawiony w tym miejscu.")));
+		alert.showAndWait();
+	}
 }
