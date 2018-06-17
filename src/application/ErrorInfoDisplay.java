@@ -55,4 +55,34 @@ public class ErrorInfoDisplay {
 		alert.showAndWait();
 	}
 
+	public void wrongPort() {
+		Alert alert = new Alert(Alert.AlertType.ERROR, "Nieprawidłowy port", ButtonType.CLOSE);
+		alert.showAndWait();
+	}
+
+	public void cannotConnectToServer() {
+		Alert alert = new Alert(Alert.AlertType.INFORMATION, "Nie można się połączyć z serverem", ButtonType.CLOSE);
+		alert.showAndWait();
+	}
+
+	public void wrongPortOrIpAdress() {
+		Alert alert = new Alert(Alert.AlertType.ERROR, "Nieprawidłowy port lub adres IP ", ButtonType.CLOSE);
+		alert.showAndWait();
+	}
+
+	public void clientNotFound() {
+		Alert alert = new Alert(Alert.AlertType.INFORMATION, "Nie znaleziono klienta", ButtonType.CLOSE);
+		alert.showAndWait();
+	}
+
+	public void serverAlreadyRunning() {
+		Alert alert = new Alert(Alert.AlertType.INFORMATION, "Server jest już uruchomiony", ButtonType.CLOSE);
+		alert.showAndWait();
+	}
+
+	public void serverCrashed() {
+		Alert alert = new Alert(Alert.AlertType.INFORMATION, "Server uległ awarii", ButtonType.CLOSE);
+		alert.showAndWait();
+	}
+
 }

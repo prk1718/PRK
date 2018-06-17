@@ -8,10 +8,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
@@ -28,6 +25,7 @@ public class Controler {
 	private String regexForIP = "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$";
 	private static String DEFAULT_IP_ADRESS = "127.0.0.1";
 	private static String DEFAULT_PORT = "3343";
+	private ErrorInfoDisplay errorInfoDisplay = new ErrorInfoDisplay();
 
 	@FXML
 	private Button clientButton;
@@ -41,7 +39,7 @@ public class Controler {
 	private TextField portServerTextField;
 
 	public void setMain(Main main) {
-		this.main = main;		
+		this.main = main;
 		ipAdressClientTextField.setText(DEFAULT_IP_ADRESS);
 		portClientTextField.setText(DEFAULT_PORT);
 		portServerTextField.setText(DEFAULT_PORT);
@@ -61,30 +59,16 @@ public class Controler {
 			pane.setBackground(new Background(bi));
 			ControlerClient cl = loader.getController();
 			getConnectionParametersForClient();
-			if(Client.sprKlient(ipAdress,Integer.parseInt(clientPort))==true)
-			{
+			if (Client.sprKlient(ipAdress, Integer.parseInt(clientPort)) == true) {
 				cl.setServerClient(false, clientPort, ipAdress);
 				primaryStage.setScene(scene);
 				primaryStage.setTitle("Klient");
 				primaryStage.show();
 				main.primaryStage.close();
-				
-			}else
-			{
-				
-				Platform.runLater(new Runnable() {
-			        @Override
-			        public void run() {
-			      
-			        	Alert alert = new Alert(AlertType.INFORMATION, "Nie można się połączyć z serverem !!!!", ButtonType.CLOSE);
-						alert.showAndWait();
-			        	
-			        }
-				 });
-			}
-			
-			
 
+			} else {
+				Platform.runLater(() -> errorInfoDisplay.cannotConnectToServer());
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -95,7 +79,7 @@ public class Controler {
 		FXMLLoader loader = new FXMLLoader(Main.class.getResource("/controller/client.fxml"));
 
 		try {
-			
+
 			Stage primaryStage = new Stage();
 			AnchorPane pane = loader.load();
 			primaryStage.setMinWidth(800.0);
@@ -105,16 +89,15 @@ public class Controler {
 			pane.setBackground(new Background(bi));
 			ControlerClient cl = loader.getController();
 			getConnectionParametersForServer();
-			if(Server.sprSvr(serverPort)==true)
-			{
+			if (Server.sprSvr(serverPort) == true) {
 				cl.setServerClient(true, serverPort, null);
 				primaryStage.setScene(scene);
 				primaryStage.setTitle("Serwer");
 				primaryStage.show();
-				
+
 				main.primaryStage.close();
 			}
-		
+
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -124,8 +107,7 @@ public class Controler {
 	private void getConnectionParametersForServer() throws ConnectException {
 		serverPort = portServerTextField.getText();
 		if (!validatePort(serverPort)) {
-			Alert alert = new Alert(AlertType.ERROR, "Nieprawidłowy port ", ButtonType.CLOSE);
-			alert.showAndWait();
+			errorInfoDisplay.wrongPort();
 			throw new ConnectException();
 		}
 	}
@@ -134,8 +116,7 @@ public class Controler {
 		clientPort = portClientTextField.getText();
 		ipAdress = ipAdressClientTextField.getText();
 		if (!validatePort(clientPort) || !validateIp(ipAdress)) {
-			Alert alert = new Alert(AlertType.ERROR, "Nieprawidłowy port lub adres IP ", ButtonType.CLOSE);
-			alert.showAndWait();
+			errorInfoDisplay.wrongPortOrIpAdress();
 			throw new ConnectException();
 		}
 	}
@@ -151,5 +132,4 @@ public class Controler {
 		Matcher matcher = pattern.matcher(adressIp);
 		return matcher.matches();
 	}
-
 }
