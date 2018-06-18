@@ -297,9 +297,14 @@
           <children>
                   <VBox prefHeight="400.0" prefWidth="283.0">
                      <children>
+                        <CheckBox fx:id="orientacja" layoutX="50.0" layoutY="110.0" mnemonicParsing="false" text="Orientacja">
+                           <VBox.margin>
+                              <Insets left="40.0" top="80.0" />
+                           </VBox.margin>
+                        </CheckBox>
                         <CheckBox fx:id="czteroM" mnemonicParsing="false" onAction="#akcjaCheck4" text="4(1)">
                            <VBox.margin>
-                              <Insets left="40.0" top="100.0" />
+                              <Insets left="40.0" top="20.0" />
                            </VBox.margin>
                         </CheckBox>
                         <CheckBox fx:id="trzyM" mnemonicParsing="false" onAction="#akcjaCheck3" text="3(2)">

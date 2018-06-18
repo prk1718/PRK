@@ -2,6 +2,7 @@ package application;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -34,6 +35,7 @@ public class ControlerClient {
 	public Background backDefault = null;
 	private HashMap<String, Integer> statkiMap = new HashMap<>();
 	private HashMap<String, Integer> statkiPlacedMap = new HashMap<>();
+	private ArrayList<CheckBox> checkBoxArrayList = new ArrayList<>();
 	private ErrorInfoDisplay errorInfoDisplay = new ErrorInfoDisplay();
 
 	@FXML
@@ -58,10 +60,12 @@ public class ControlerClient {
 	private CheckBox dwuM;
 	@FXML
 	private CheckBox jednoM;
-
+	@FXML
+	private CheckBox orientacja;
 
 	@FXML
 	private void initialize() {
+		initcheckBoxArrayList();
 		initButtonView();
 		initStatkiMap();
 		initStatkiPlacedMap();
@@ -81,6 +85,23 @@ public class ControlerClient {
 
 		}).start();
 
+	}
+
+	private void initcheckBoxArrayList() {
+		checkBoxArrayList.add(jednoM);
+		checkBoxArrayList.add(dwuM);
+		checkBoxArrayList.add(trzyM);
+		checkBoxArrayList.add(czteroM);
+	}
+
+	private String getSelectedCheckboxValue() {
+		String selectedCheckbox = "";
+		for (CheckBox checkBox : checkBoxArrayList) {
+			if (checkBox.isSelected()) {
+				selectedCheckbox = checkBox.getText().substring(0, 1);
+			}
+		}
+		return selectedCheckbox;
 	}
 
 	private void initButtonView() {
@@ -229,30 +250,59 @@ public class ControlerClient {
 
 	@FXML
 	public void akcjaWstaw() {
-		String text = "";
+		String selectedShipModel = getSelectedCheckboxValue();
+		if (checkBoxArrayList.stream().anyMatch(checkBox -> checkBox.isSelected()) && !selectedShipModel.equals("") && (!getRowColMoj[0].equals("") && !getRowColMoj[1].equals(""))) {
+			Integer howManyShipPlaced = statkiPlacedMap.get(selectedShipModel);
+			String pickedField = getRowColMoj[0]+"/"+getRowColMoj[1];
+			if (howManyShipPlaced >= 0 && howManyShipPlaced < statkiMap.get(selectedShipModel)) {
+				for (Node node : mojGrid.getChildren()) {
+					if (node instanceof Button) {
 
-		if ((dwuM.isSelected() || jednoM.isSelected() || czteroM.isSelected() || trzyM.isSelected()) && (!getRowColMoj[0].equals("") && !getRowColMoj[1].equals(""))) {
-			if (dwuM.isSelected()) {
-				text = "2";
-			}
-			if (trzyM.isSelected()) {
-				text = "3";
-			}
-			if (czteroM.isSelected()) {
-				text = "4";
-			}
-			if (jednoM.isSelected()) {
-				text = "1";
+						String selectedStartingPoint = GridPane.getRowIndex(node) + "/" + GridPane.getColumnIndex(node);
+						if (selectedStartingPoint.equals(pickedField)) {
+
+							Integer howManyShipToPlace = Integer.parseInt(selectedShipModel);
+							Integer row = GridPane.getRowIndex(node);
+							Integer col = GridPane.getColumnIndex(node);
+							boolean ustawiacPoziomo = orientacja.isSelected();
+							if (ustawiacPoziomo) {
+								if (row + howManyShipToPlace > 10) {
+									errorInfoDisplay.placingShipNotPossible();
+									break;
+								}
+								for (int i = row; i < row + howManyShipToPlace; i++) {
+									Button button = (Button) getButtonByRowColumnIndex(i, col, mojGrid);
+									setDisplayForPlacedShip(button);
+									button.setText("-");
+								}
+							} else {
+								if (col + howManyShipToPlace > 10) {
+									errorInfoDisplay.placingShipNotPossible();
+									break;
+								}
+								for (int i = col; i < col + howManyShipToPlace; i++) {
+									Button button = (Button) getButtonByRowColumnIndex(row, i, mojGrid);
+									setDisplayForPlacedShip(button);
+									button.setText("|");
+								}
+							}
+							Integer placed = statkiPlacedMap.get(selectedShipModel) + 1;
+							statkiPlacedMap.replace(selectedShipModel, placed);
+						}
+					}
+				}
+
+				getRowColMoj[0] = "";
+				getRowColMoj[1] = "";
 			}
 
-			((Button) getButtonByRowColumnIndex(Integer.parseInt(getRowColMoj[0]), Integer.parseInt(getRowColMoj[1]), mojGrid)).setBackground(new Background(new BackgroundFill(
-					Color.GRAY, null, null)));
-			((Button) getButtonByRowColumnIndex(Integer.parseInt(getRowColMoj[0]), Integer.parseInt(getRowColMoj[1]), mojGrid)).setText(text);
-
-			getRowColMoj[0] = "";
-			getRowColMoj[1] = "";
 		}
+	}
 
+	private void setDisplayForPlacedShip(Button button) {
+		button.setStyle("-fx-border-style: none; -fx-border-width: 0px; -fx-border-insets: 0; -fx-font-size:1px; -fx-background-image: url('button.jpg')");
+		Image image = new Image(getClass().getResourceAsStream("../view/ship.jpg"));
+		button.setGraphic(new ImageView(image));
 	}
 
 	@FXML
