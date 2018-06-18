@@ -85,4 +85,12 @@ public class ErrorInfoDisplay {
 		alert.showAndWait();
 	}
 
+	public void showNotStartOfAShip() {
+		Alert alert = new Alert(Alert.AlertType.ERROR);
+		alert.setHeaderText("To nie jest początek statku");
+		alert.getDialogPane().setExpandableContent(
+				new ScrollPane(new TextArea("Do usunięcia statku należy zaznaczyć jego górną lub lewą część")));
+		alert.showAndWait();
+	}
+
 }

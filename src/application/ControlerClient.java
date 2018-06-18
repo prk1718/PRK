@@ -1,7 +1,5 @@
 package application;
 
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -23,8 +21,6 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 
-import javax.sound.sampled.*;
-
 public class ControlerClient {
 
 	private Server server;
@@ -37,6 +33,7 @@ public class ControlerClient {
 	private HashMap<String, Integer> statkiPlacedMap = new HashMap<>();
 	private ArrayList<CheckBox> checkBoxArrayList = new ArrayList<>();
 	private ErrorInfoDisplay errorInfoDisplay = new ErrorInfoDisplay();
+	private SoundPlayer soundPlayer = new SoundPlayer();
 
 	@FXML
 	private Button sendMessageButton;
@@ -253,7 +250,7 @@ public class ControlerClient {
 		String selectedShipModel = getSelectedCheckboxValue();
 		if (checkBoxArrayList.stream().anyMatch(checkBox -> checkBox.isSelected()) && !selectedShipModel.equals("") && (!getRowColMoj[0].equals("") && !getRowColMoj[1].equals(""))) {
 			Integer howManyShipPlaced = statkiPlacedMap.get(selectedShipModel);
-			String pickedField = getRowColMoj[0]+"/"+getRowColMoj[1];
+			String pickedField = getRowColMoj[0] + "/" + getRowColMoj[1];
 			if (howManyShipPlaced >= 0 && howManyShipPlaced < statkiMap.get(selectedShipModel)) {
 				for (Node node : mojGrid.getChildren()) {
 					if (node instanceof Button) {
@@ -273,7 +270,7 @@ public class ControlerClient {
 								for (int i = row; i < row + howManyShipToPlace; i++) {
 									Button button = (Button) getButtonByRowColumnIndex(i, col, mojGrid);
 									setDisplayForPlacedShip(button);
-									button.setText("-");
+									button.setText("|");
 								}
 							} else {
 								if (col + howManyShipToPlace > 10) {
@@ -283,7 +280,7 @@ public class ControlerClient {
 								for (int i = col; i < col + howManyShipToPlace; i++) {
 									Button button = (Button) getButtonByRowColumnIndex(row, i, mojGrid);
 									setDisplayForPlacedShip(button);
-									button.setText("|");
+									button.setText("-");
 								}
 							}
 							Integer placed = statkiPlacedMap.get(selectedShipModel) + 1;
@@ -308,9 +305,36 @@ public class ControlerClient {
 	@FXML
 	public void akcjaUsun() {
 		if ((!getRowColMoj[0].equals("") && !getRowColMoj[1].equals(""))) {
-			((Button) getButtonByRowColumnIndex(Integer.parseInt(getRowColMoj[0]), Integer.parseInt(getRowColMoj[1]), mojGrid)).setBackground(backDefault);
-			((Button) getButtonByRowColumnIndex(Integer.parseInt(getRowColMoj[0]), Integer.parseInt(getRowColMoj[1]), mojGrid)).setText("");
+			int count = 0;
+			Integer row = Integer.parseInt(getRowColMoj[0]);
+			Integer col = Integer.parseInt(getRowColMoj[1]);
+			String orientacjaStatku = ((Button) getButtonByRowColumnIndex(row, col, mojGrid)).getText();
 
+			for (int i = 0; i < 4; i++) {
+				if (orientacjaStatku.equals("|") && (row + i < 10)) {
+					if (validateVerticalDeleteButtonAction(row, col))
+						return;
+					Button button = (Button) getButtonByRowColumnIndex(row + i, col, mojGrid);
+					if (button.getText().equals("|")) {
+						setDefaultBackgroundAndTextForField(button);
+						count++;
+					}
+				} else if (orientacjaStatku.equals("-") && (col + i < 10)) {
+					if (validateHorizontalDeleteButtonAction(row, col))
+						return;
+					Button button = (Button) getButtonByRowColumnIndex(row, col + i, mojGrid);
+					if (button.getText().equals("-")) {
+						setDefaultBackgroundAndTextForField(button);
+						count++;
+					}
+				}
+			}
+			if (count != 0) {
+				int howManyShipPlaced = statkiPlacedMap.get(String.valueOf(count));
+				if (howManyShipPlaced > 0) {
+					statkiPlacedMap.replace(String.valueOf(count), howManyShipPlaced - 1);
+				}
+			}
 			getRowColMoj[0] = "";
 			getRowColMoj[1] = "";
 		}
@@ -356,12 +380,10 @@ public class ControlerClient {
 						String mess = "#trafiony#" + messZapas[0] + "," + messZapas[1] + "$trafiony$";
 						if (isAppServer) {
 							server.send(mess);
-
-							playSound(this.getClass().getClassLoader(), "view/hit.wav");
+							soundPlayer.playSound(this.getClass().getClassLoader(), "view/hit.wav");
 						} else {
 							client.send(mess);
-
-							playSound(this.getClass().getClassLoader(), "view/hit.wav");
+							soundPlayer.playSound(this.getClass().getClassLoader(), "view/hit.wav");
 						}
 						errorInfoDisplay.youGotHitInfo();
 
@@ -374,10 +396,10 @@ public class ControlerClient {
 						String mess = "#pudlo#" + messZapas[0] + "," + messZapas[1] + "$pudlo$";
 						if (isAppServer) {
 							server.send(mess);
-							playSound(this.getClass().getClassLoader(), "view/miss.wav");
+							soundPlayer.playSound(this.getClass().getClassLoader(), "view/miss.wav");
 						} else {
 							client.send(mess);
-							playSound(this.getClass().getClassLoader(), "view/miss.wav");
+							soundPlayer.playSound(this.getClass().getClassLoader(), "view/miss.wav");
 						}
 						errorInfoDisplay.enemyMissInfo();
 					}
@@ -419,15 +441,32 @@ public class ControlerClient {
 		statkiMap.put("4", 1);
 	}
 
-	private void playSound(ClassLoader classLoader, String s) {
-		try {
-			URL url = classLoader.getResource(s);
-			AudioInputStream audioIn = AudioSystem.getAudioInputStream(url);
-			Clip clip = AudioSystem.getClip();
-			clip.open(audioIn);
-			clip.start();
-		} catch (IOException | UnsupportedAudioFileException | LineUnavailableException e) {
-			e.printStackTrace();
+	private void setDefaultBackgroundAndTextForField(Button button) {
+		button.setStyle("-fx-border-style: none; -fx-border-width: 0px; -fx-border-insets: 0; -fx-font-size:1px; -fx-background-image: url('button.jpg')");
+		Image image = new Image(getClass().getResourceAsStream("../view/button.jpg"));
+		button.setText("");
+		button.setGraphic(new ImageView(image));
+	}
+
+	private boolean validateHorizontalDeleteButtonAction(Integer row, Integer col) {
+		if (col - 1 > 0) {
+			Button button = (Button) getButtonByRowColumnIndex(row, col - 1, mojGrid);
+			if (button.getText().equals("-")) {
+				errorInfoDisplay.showNotStartOfAShip();
+				return true;
+			}
 		}
+		return false;
+	}
+
+	private boolean validateVerticalDeleteButtonAction(Integer row, Integer col) {
+		if (row - 1 > 0) {
+			Button button = (Button) getButtonByRowColumnIndex(row - 1, col, mojGrid);
+			if (button.getText().equals("|")) {
+				errorInfoDisplay.showNotStartOfAShip();
+				return true;
+			}
+		}
+		return false;
 	}
 }
