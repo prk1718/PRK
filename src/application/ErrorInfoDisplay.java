@@ -93,4 +93,11 @@ public class ErrorInfoDisplay {
 		alert.showAndWait();
 	}
 
+	public void showShipCannotBePlacedHere() {
+		Alert alert = new Alert(Alert.AlertType.ERROR);
+		alert.setHeaderText("Nie można tutaj postawić statku");
+		alert.getDialogPane().setExpandableContent(
+				new ScrollPane(new TextArea("Statek nie może stykać się z innym statkiem")));
+		alert.showAndWait();
+	}
 }

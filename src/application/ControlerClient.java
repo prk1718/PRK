@@ -251,6 +251,11 @@ public class ControlerClient {
 		if (checkBoxArrayList.stream().anyMatch(checkBox -> checkBox.isSelected()) && !selectedShipModel.equals("") && (!getRowColMoj[0].equals("") && !getRowColMoj[1].equals(""))) {
 			Integer howManyShipPlaced = statkiPlacedMap.get(selectedShipModel);
 			String pickedField = getRowColMoj[0] + "/" + getRowColMoj[1];
+			if (!checkIfShipCanBePlaced()) {
+				errorInfoDisplay.showShipCannotBePlacedHere();
+				return;
+			}
+
 			if (howManyShipPlaced >= 0 && howManyShipPlaced < statkiMap.get(selectedShipModel)) {
 				for (Node node : mojGrid.getChildren()) {
 					if (node instanceof Button) {
@@ -271,6 +276,7 @@ public class ControlerClient {
 									Button button = (Button) getButtonByRowColumnIndex(i, col, mojGrid);
 									setDisplayForPlacedShip(button);
 									button.setText("|");
+									setNotPossibleImageForFields(i, col);
 								}
 							} else {
 								if (col + howManyShipToPlace > 10) {
@@ -281,8 +287,10 @@ public class ControlerClient {
 									Button button = (Button) getButtonByRowColumnIndex(row, i, mojGrid);
 									setDisplayForPlacedShip(button);
 									button.setText("-");
+									setNotPossibleImageForFields(row, i);
 								}
 							}
+
 							Integer placed = statkiPlacedMap.get(selectedShipModel) + 1;
 							statkiPlacedMap.replace(selectedShipModel, placed);
 						}
@@ -295,6 +303,22 @@ public class ControlerClient {
 
 		}
 	}
+
+	private void setNotPossibleImageForFields(int row, int col) {
+		for (int i = row - 1; i <= row + 1; i++) {
+			for (int j = col - 1; j <= col + 1; j++) {
+				if (i >= 0 && i <= 9 && j >= 0 && j <= 9) {
+					Button button = (Button) getButtonByRowColumnIndex(i, j, mojGrid);
+					if (button.getText().equals("")) {
+						button.setStyle("-fx-border-style: none; -fx-border-width: 0px; -fx-border-insets: 0; -fx-font-size:1px; -fx-background-image: url('placingShipNotPossible.jpg')");
+						Image image = new Image(getClass().getResourceAsStream("../view/placingShipNotPossible.jpg"));
+						button.setGraphic(new ImageView(image));
+					}
+				}
+			}
+		}
+	}
+
 
 	private void setDisplayForPlacedShip(Button button) {
 		button.setStyle("-fx-border-style: none; -fx-border-width: 0px; -fx-border-insets: 0; -fx-font-size:1px; -fx-background-image: url('button.jpg')");
@@ -469,4 +493,29 @@ public class ControlerClient {
 		}
 		return false;
 	}
+
+	private boolean checkIfShipCanBePlaced() {
+		Boolean isOk = true;
+		Integer row = Integer.parseInt(getRowColMoj[0]);
+		Integer col = Integer.parseInt(getRowColMoj[1]);
+
+		for (int i = row - 1; i <= row + 1; i++) {
+			for (int j = col - 1; j <= col + 1; j++) {
+				if (i >= 0 && i <= 9 && j >= 0 && j <= 9) {
+					if (validatePlacingShipForRowAndCol(i, j)) {
+						return false;
+					}
+				}
+			}
+		}
+		return isOk;
+	}
+
+	private boolean validatePlacingShipForRowAndCol(Integer row, Integer col) {
+		Button button = (Button) getButtonByRowColumnIndex(row, col, mojGrid);
+		if (!button.getText().equals(""))
+			return true;
+		return false;
+	}
+
 }
