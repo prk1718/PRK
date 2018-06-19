@@ -17,9 +17,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.GridPane;
-import javafx.scene.paint.Color;
 
 /**
  * @author Seweryn Czapiewski and Rafał Witkowski
@@ -568,8 +566,6 @@ public class ControlerClient {
 					String[] messZapas = mess.substring(8, mess.length() - 8).split(",");
 
 					if (!((Button) getButtonByRowColumnIndex(Integer.parseInt(messZapas[0]), Integer.parseInt(messZapas[1]), mojGrid)).getText().equals("")) {
-						((Button) getButtonByRowColumnIndex(Integer.parseInt(messZapas[0]), Integer.parseInt(messZapas[1]), mojGrid)).setBackground(new Background(new BackgroundFill(
-								Color.WHITE, null, null)));
 
 						String mess = "#trafiony#" + messZapas[0] + "," + messZapas[1] + "$trafiony$";
 						if (isAppServer) {
@@ -582,8 +578,6 @@ public class ControlerClient {
 						errorInfoDisplay.youGotHitInfo();
 
 					} else {
-						((Button) getButtonByRowColumnIndex(Integer.parseInt(messZapas[0]), Integer.parseInt(messZapas[1]), mojGrid)).setBackground(new Background(new BackgroundFill(
-								Color.LIGHTGREY, null, null)));
 						((Button) getButtonByRowColumnIndex(Integer.parseInt(messZapas[0]), Integer.parseInt(messZapas[1]), mojGrid)).setText("P");
 
 						String mess = "#pudlo#" + messZapas[0] + "," + messZapas[1] + "$pudlo$";
@@ -602,8 +596,6 @@ public class ControlerClient {
 			Platform.runLater(() -> {
 
 				String[] messZapas = mess.substring(10, mess.length() - 10).split(",");
-				((Button) getButtonByRowColumnIndex(Integer.parseInt(messZapas[0]), Integer.parseInt(messZapas[1]), przeciwnikGrid)).setBackground(new Background(new BackgroundFill(
-						Color.GRAY, null, null)));
 
 				setImageEnemyShipHit(messZapas[0], messZapas[1]);
 				errorInfoDisplay.youHitInfo();
@@ -612,8 +604,6 @@ public class ControlerClient {
 			Platform.runLater(() -> {
 
 				String[] messZapas = mess.substring(7, mess.length() - 7).split(",");
-				((Button) getButtonByRowColumnIndex(Integer.parseInt(messZapas[0]), Integer.parseInt(messZapas[1]), przeciwnikGrid)).setBackground(new Background(new BackgroundFill(
-						Color.LIGHTGREY, null, null)));
 				((Button) getButtonByRowColumnIndex(Integer.parseInt(messZapas[0]), Integer.parseInt(messZapas[1]), przeciwnikGrid)).setText("P");
 
 				setImageEnemyShipNotHit(messZapas[0], messZapas[1]);
