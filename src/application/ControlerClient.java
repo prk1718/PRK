@@ -276,7 +276,6 @@ public class ControlerClient {
 									Button button = (Button) getButtonByRowColumnIndex(i, col, mojGrid);
 									setDisplayForPlacedShip(button);
 									button.setText("|");
-									setNotPossibleImageForFields(i, col);
 								}
 							} else {
 								if (col + howManyShipToPlace > 10) {
@@ -287,7 +286,6 @@ public class ControlerClient {
 									Button button = (Button) getButtonByRowColumnIndex(row, i, mojGrid);
 									setDisplayForPlacedShip(button);
 									button.setText("-");
-									setNotPossibleImageForFields(row, i);
 								}
 							}
 
@@ -301,6 +299,7 @@ public class ControlerClient {
 				getRowColMoj[1] = "";
 			}
 		}
+		renderFieldsNotPossibleForPlacingShip();
 		setProperTextForCheckbox();
 	}
 
@@ -362,8 +361,29 @@ public class ControlerClient {
 			getRowColMoj[0] = "";
 			getRowColMoj[1] = "";
 		}
-
+		renderFieldsNotPossibleForPlacingShip();
 		setProperTextForCheckbox();
+	}
+
+	private void renderFieldsNotPossibleForPlacingShip() {
+		//RW: tu muszą być dwie oddzielne pętle
+		for (Node node : mojGrid.getChildren()) {
+			if (node instanceof Button) {
+				Button button = (Button) node;
+				if (button.getText().equals("")) {
+					setDefaultBackgroundForField(button);
+				}
+			}
+		}
+		for (Node node : mojGrid.getChildren()) {
+			if (node instanceof Button) {
+				int row = GridPane.getRowIndex(node);
+				int col = GridPane.getColumnIndex(node);
+				Button button = (Button) node;
+				if (!button.getText().equals(""))
+					setNotPossibleImageForFields(row, col);
+			}
+		}
 	}
 
 	private void setProperTextForCheckbox() {
@@ -471,6 +491,12 @@ public class ControlerClient {
 		statkiMap.put("2", 3);
 		statkiMap.put("3", 2);
 		statkiMap.put("4", 1);
+	}
+
+	private void setDefaultBackgroundForField(Button button) {
+		button.setStyle("-fx-border-style: none; -fx-border-width: 0px; -fx-border-insets: 0; -fx-font-size:1px; -fx-background-image: url('button.jpg')");
+		Image image = new Image(getClass().getResourceAsStream("../view/button.jpg"));
+		button.setGraphic(new ImageView(image));
 	}
 
 	private void setDefaultBackgroundAndTextForField(Button button) {
