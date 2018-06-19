@@ -300,8 +300,8 @@ public class ControlerClient {
 				getRowColMoj[0] = "";
 				getRowColMoj[1] = "";
 			}
-
 		}
+		setProperTextForCheckbox();
 	}
 
 	private void setNotPossibleImageForFields(int row, int col) {
@@ -363,6 +363,14 @@ public class ControlerClient {
 			getRowColMoj[1] = "";
 		}
 
+		setProperTextForCheckbox();
+	}
+
+	private void setProperTextForCheckbox() {
+		jednoM.setText("1 (" + (statkiMap.get("1") - statkiPlacedMap.get("1")) + ")");
+		dwuM.setText("2 (" + (statkiMap.get("2") - statkiPlacedMap.get("2")) + ")");
+		trzyM.setText("3 (" + (statkiMap.get("3") - statkiPlacedMap.get("3")) + ")");
+		czteroM.setText("4 (" + (statkiMap.get("4") - statkiPlacedMap.get("4")) + ")");
 	}
 
 	@FXML

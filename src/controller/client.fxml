@@ -302,22 +302,22 @@
                               <Insets left="40.0" top="80.0" />
                            </VBox.margin>
                         </CheckBox>
-                        <CheckBox fx:id="czteroM" mnemonicParsing="false" onAction="#akcjaCheck4" text="4(1)">
+                        <CheckBox fx:id="czteroM" mnemonicParsing="false" onAction="#akcjaCheck4" text="4 (1)">
                            <VBox.margin>
                               <Insets left="40.0" top="20.0" />
                            </VBox.margin>
                         </CheckBox>
-                        <CheckBox fx:id="trzyM" mnemonicParsing="false" onAction="#akcjaCheck3" text="3(2)">
+                        <CheckBox fx:id="trzyM" mnemonicParsing="false" onAction="#akcjaCheck3" text="3 (2)">
                            <VBox.margin>
                               <Insets left="40.0" top="20.0" />
                            </VBox.margin>
                         </CheckBox>
-                        <CheckBox fx:id="dwuM" mnemonicParsing="false" onAction="#akcjaCheck2" text="2(3)">
+                        <CheckBox fx:id="dwuM" mnemonicParsing="false" onAction="#akcjaCheck2" text="2 (3)">
                            <VBox.margin>
                               <Insets left="40.0" top="20.0" />
                            </VBox.margin>
                         </CheckBox>
-                        <CheckBox fx:id="jednoM" mnemonicParsing="false" onAction="#akcjaCheck1" text="1(4)">
+                        <CheckBox fx:id="jednoM" mnemonicParsing="false" onAction="#akcjaCheck1" text="1 (4)">
                            <VBox.margin>
                               <Insets left="40.0" top="20.0" />
                            </VBox.margin>
