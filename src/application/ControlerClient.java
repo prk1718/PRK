@@ -464,6 +464,7 @@ public class ControlerClient {
 				((Button) getButtonByRowColumnIndex(Integer.parseInt(messZapas[0]), Integer.parseInt(messZapas[1]), przeciwnikGrid)).setBackground(new Background(new BackgroundFill(
 						Color.GRAY, null, null)));
 
+				setImageEnemyShipHit(messZapas[0], messZapas[1]);
 				errorInfoDisplay.youHitInfo();
 			});
 		} else if (mess.indexOf("#pudlo#") != -1 && mess.indexOf("$pudlo$") != -1) {
@@ -474,9 +475,28 @@ public class ControlerClient {
 						Color.LIGHTGREY, null, null)));
 				((Button) getButtonByRowColumnIndex(Integer.parseInt(messZapas[0]), Integer.parseInt(messZapas[1]), przeciwnikGrid)).setText("P");
 
+				setImageEnemyShipNotHit(messZapas[0], messZapas[1]);
 				errorInfoDisplay.youMissedInfo();
 			});
 		}
+	}
+
+	private void setImageEnemyShipNotHit(String rowMess, String colMess) {
+		Integer row = Integer.valueOf(rowMess);
+		Integer col = Integer.valueOf(colMess);
+		Button button = (Button) getButtonByRowColumnIndex(row, col, przeciwnikGrid);
+		button.setStyle("-fx-border-style: none; -fx-border-width: 0px; -fx-border-insets: 0; -fx-font-size:1px; -fx-background-image: url('buttonPudlo.jpg')");
+		Image image = new Image(getClass().getResourceAsStream("../view/buttonPudlo.jpg"));
+		button.setGraphic(new ImageView(image));
+	}
+
+	private void setImageEnemyShipHit(String rowMess, String colMess) {
+		Integer row = Integer.valueOf(rowMess);
+		Integer col = Integer.valueOf(colMess);
+		Button button = (Button) getButtonByRowColumnIndex(row, col, przeciwnikGrid);
+		button.setStyle("-fx-border-style: none; -fx-border-width: 0px; -fx-border-insets: 0; -fx-font-size:1px; -fx-background-image: url('enemyShipHit.jpg')");
+		Image image = new Image(getClass().getResourceAsStream("../view/enemyShipHit.jpg"));
+		button.setGraphic(new ImageView(image));
 	}
 
 	private void initStatkiPlacedMap() {
