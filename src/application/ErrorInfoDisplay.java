@@ -224,6 +224,7 @@ public class ErrorInfoDisplay {
 	/**
 	 * @author Seweryn Czapiewski
 	 * Alert informujący o trafieniu wszystkich statków
+	 * @param jaPrzeciwnik czy gracz to przeciwnik
 	 */
 	public void weryfikacjaTrafien(boolean jaPrzeciwnik)
 	{
