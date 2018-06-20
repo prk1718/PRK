@@ -19,7 +19,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
@@ -33,7 +32,7 @@ public class ControlerClient {
 	private Client client;
 	private boolean isAppServer;
 
-	public String[] getRowColMoj = new String[]{"", ""}, getRowColPrzeciwnik = new String[]{"", ""};
+	private String[] getRowColMoj = new String[]{"", ""}, getRowColPrzeciwnik = new String[]{"", ""};
 	private HashMap<String, Integer> statkiMap = new HashMap<>();
 	private HashMap<String, Integer> statkiTrafione = new HashMap<>();
 	private HashMap<String, Integer> statkiTrafioneMoje = new HashMap<>();
@@ -41,7 +40,8 @@ public class ControlerClient {
 	private ArrayList<CheckBox> checkBoxArrayList = new ArrayList<>();
 	private ErrorInfoDisplay errorInfoDisplay = new ErrorInfoDisplay();
 	private SoundPlayer soundPlayer = new SoundPlayer();
-	private boolean jaGotowy=false,przeciwnikGotowy=false;
+	private boolean jaGotowy = false;
+	private boolean przeciwnikGotowy = false;
 
 	@FXML
 	private Button sendMessageButton;
@@ -73,7 +73,7 @@ public class ControlerClient {
 	private Button strzelajStatek;
 	@FXML
 	private VBox wstawianieStatkow;
-	
+
 
 	/**
 	 * @author Seweryn Czapiewski and Rafał Witkowski
@@ -81,7 +81,7 @@ public class ControlerClient {
 	 */
 	@FXML
 	private void initialize() {
-		
+
 		initcheckBoxArrayList();
 		initButtonView();
 		initStatkiMap();
@@ -89,25 +89,23 @@ public class ControlerClient {
 		initStatkiPlacedMap();
 		klikGridMojGetRowCol();
 		klikGridPrzeciwnikGetRowCol();
-		
 
 
 	}
-	
+
 	/**
 	 * @author Seweryn Czapiewski
 	 * Reset stanu gry
 	 */
 	@FXML
-	public void nowaGierka()
-	{
+	public void nowaGierka() {
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		alert.setTitle("Nowa Gra");
 		alert.setHeaderText("Info");
 		alert.setContentText("Rozpocząć nową grę ????");
 		alert.showAndWait().ifPresent(rs -> {
-		    if (rs == ButtonType.OK) {
-		    	
+			if (rs == ButtonType.OK) {
+
 				initButtonView();
 				initStatkiMap();
 				initStatkiPlacedMap();
@@ -115,70 +113,64 @@ public class ControlerClient {
 				setRadioButtonsNotSelected();
 				strzelajStatek.setDisable(true);
 				start.setDisable(false);
-				jaGotowy=false;
-				przeciwnikGotowy=false;
+				jaGotowy = false;
+				przeciwnikGotowy = false;
 				wstawianieStatkow.setDisable(false);
 				przeciwnikGrid.setDisable(false);
 				mojGrid.setDisable(false);
-			
 
-		    }
+
+			}
 		});
-		
+
 	}
-	
+
 	/**
 	 * @author Seweryn Czapiewski
 	 * Rozpoczecie nowej gry
 	 */
 	@FXML
-	public void startGry()
-	{
+	public void startGry() {
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		alert.setTitle("Start Gry");
 		alert.setHeaderText("Info");
 		alert.setContentText("Wystartować grę ????");
 		alert.showAndWait().ifPresent(rs -> {
-		
-		    if (rs == ButtonType.OK) {
-		    	
-		    	
-				if(statkiPlacedMap.get("1")==4&&statkiPlacedMap.get("2")==3&&statkiPlacedMap.get("3")==2&&statkiPlacedMap.get("4")==1)
-				{
-					jaGotowy=true;
+
+			if (rs == ButtonType.OK) {
+
+
+				if (statkiPlacedMap.get("1") == 4 && statkiPlacedMap.get("2") == 3 && statkiPlacedMap.get("3") == 2 && statkiPlacedMap.get("4") == 1) {
+					jaGotowy = true;
 					start.setDisable(true);
 					wstawianieStatkow.setDisable(true);
 
-					
+
 					String message = "gotowy";
 					if (isAppServer) {
 						server.send("#start#" + message + "$start$");
 					} else {
 						client.send("#start#" + message + "$start$");
 					}
-					
-					if(przeciwnikGotowy)
-					{						
+
+					if (przeciwnikGotowy) {
 						errorInfoDisplay.przeciwnikRozpoczyna();
-						
-					}else
-					{
 
-						errorInfoDisplay.jaRozpoczynam();				
+					} else {
 
-					}					
-					
-				}else
-				{
+						errorInfoDisplay.jaRozpoczynam();
+
+					}
+
+				} else {
 					errorInfoDisplay.bladRozpoczecia();
 				}
-		    
-		    }
+
+			}
 		});
-		
+
 	}
-	
-	
+
 
 	/**
 	 * @author Rafał Witkowski
@@ -328,7 +320,7 @@ public class ControlerClient {
 
 	/**
 	 * @param row      row of field in board
-	 * @param col      column of field in board
+	 * @param column   column of field in board
 	 * @param gridPane board - enemies or players
 	 * @return Node which is a superclass for Button
 	 * @author Seweryn Czapiewski
@@ -443,7 +435,7 @@ public class ControlerClient {
 	 */
 	@FXML
 	public void akcjaWstaw() {
-		
+
 		String selectedShipModel = getSelectedCheckboxValue();
 		if (checkBoxArrayList.stream().anyMatch(checkBox -> checkBox.isSelected()) && !selectedShipModel.equals("") && (!getRowColMoj[0].equals("") && !getRowColMoj[1].equals(""))) {
 			Integer howManyShipPlaced = statkiPlacedMap.get(selectedShipModel);
@@ -472,7 +464,7 @@ public class ControlerClient {
 								for (int i = row; i < row + howManyShipToPlace; i++) {
 									Button button = (Button) getButtonByRowColumnIndex(i, col, mojGrid);
 									setDisplayForPlacedShip(button);
-									button.setText("|"+selectedShipModel+statkiPlacedMap.get(selectedShipModel));
+									button.setText("|" + selectedShipModel + statkiPlacedMap.get(selectedShipModel));
 								}
 							} else {
 								if (col + howManyShipToPlace > 10) {
@@ -482,7 +474,7 @@ public class ControlerClient {
 								for (int i = col; i < col + howManyShipToPlace; i++) {
 									Button button = (Button) getButtonByRowColumnIndex(row, i, mojGrid);
 									setDisplayForPlacedShip(button);
-									button.setText("-"+selectedShipModel+statkiPlacedMap.get(selectedShipModel));
+									button.setText("-" + selectedShipModel + statkiPlacedMap.get(selectedShipModel));
 								}
 							}
 
@@ -545,19 +537,19 @@ public class ControlerClient {
 			String orientacjaStatku = ((Button) getButtonByRowColumnIndex(row, col, mojGrid)).getText();
 
 			for (int i = 0; i < 4; i++) {
-				if (orientacjaStatku.indexOf("|")!=-1 && (row + i < 10)) {
+				if (orientacjaStatku.indexOf("|") != -1 && (row + i < 10)) {
 					if (validateVerticalDeleteButtonAction(row, col))
 						return;
 					Button button = (Button) getButtonByRowColumnIndex(row + i, col, mojGrid);
-					if (button.getText().indexOf("|")!=-1) {
+					if (button.getText().indexOf("|") != -1) {
 						setDefaultBackgroundAndTextForField(button);
 						count++;
 					}
-				} else if (orientacjaStatku.indexOf("-")!=-1 && (col + i < 10)) {
+				} else if (orientacjaStatku.indexOf("-") != -1 && (col + i < 10)) {
 					if (validateHorizontalDeleteButtonAction(row, col))
 						return;
 					Button button = (Button) getButtonByRowColumnIndex(row, col + i, mojGrid);
-					if (button.getText().indexOf("-")!=-1) {
+					if (button.getText().indexOf("-") != -1) {
 						setDefaultBackgroundAndTextForField(button);
 						count++;
 					}
@@ -622,18 +614,16 @@ public class ControlerClient {
 	 */
 	@FXML
 	public void akcjaStrzelaj() {
-		
-		
+
+
 		String message = "#strzal#" + getRowColPrzeciwnik[0] + "," + getRowColPrzeciwnik[1] + "$strzal$";
 
 		if ((!getRowColPrzeciwnik[0].equals("") && !getRowColPrzeciwnik[1].equals(""))) {
-			
-			if(!((Button) getButtonByRowColumnIndex(Integer.parseInt(getRowColPrzeciwnik[0]), Integer.parseInt(getRowColPrzeciwnik[1]), przeciwnikGrid)).getText().equals(""))
-			{
+
+			if (!((Button) getButtonByRowColumnIndex(Integer.parseInt(getRowColPrzeciwnik[0]), Integer.parseInt(getRowColPrzeciwnik[1]), przeciwnikGrid)).getText().equals("")) {
 				errorInfoDisplay.strzalJuzByl();
-				
-			}else
-			{
+
+			} else {
 
 				if (isAppServer) {
 					server.send(message);
@@ -641,7 +631,7 @@ public class ControlerClient {
 					client.send(message);
 				}
 			}
-			
+
 
 			getRowColPrzeciwnik[0] = "";
 			getRowColPrzeciwnik[1] = "";
@@ -650,64 +640,66 @@ public class ControlerClient {
 			errorInfoDisplay.pickEnemyPositionInfo();
 		}
 	}
-	
+
 	/**
 	 * @author Seweryn Czapiewski
+	 * @param trafiony Przypisany string do statku
+	 * @param statki Hashmapa statkow
+	 * @param jaPrzeciwnik czy gracz to przeciwnik
+	 * @return boolean
 	 * Weryfikacja trafionych statków przeciwnika
 	 */
-	public boolean weryfikacjaIleStatkoTrafionych(String trafiony,HashMap<String,Integer> statki,boolean jaPrzeciwnik)
-	{
-		switch(trafiony)
-		{
-		
-		case "1":
-			
-			Integer placed = statki.get("1") + 1;		
-			statki.replace("1", placed);
-					
-			break;
-			
-           case "2":
-			
-        		Integer placed1 = statki.get("2") + 1;		
-        		statki.replace("2", placed1);
+	public boolean weryfikacjaIleStatkoTrafionych(String trafiony, HashMap<String, Integer> statki, boolean jaPrzeciwnik) {
+		switch (trafiony) {
 
-			break;
-			
-        case "3":
-	
-        	Integer placed2 = statki.get("3") + 1;		
-        	statki.replace("3", placed2);
+			case "1":
 
-	        break;
-	        
-          case "4":
-	
+				Integer placed = statki.get("1") + 1;
+				statki.replace("1", placed);
 
-				Integer placed3 = statki.get("4") + 1;		
+				break;
+
+			case "2":
+
+				Integer placed1 = statki.get("2") + 1;
+				statki.replace("2", placed1);
+
+				break;
+
+			case "3":
+
+				Integer placed2 = statki.get("3") + 1;
+				statki.replace("3", placed2);
+
+				break;
+
+			case "4":
+
+
+				Integer placed3 = statki.get("4") + 1;
 				statki.replace("4", placed3);
 
-	        break;
-	        
+				break;
+
 			default:
 				break;
 		}
-		
-		
-		if(statki.get("1")==4&&statki.get("2")==6&&statki.get("3")==6&&statki.get("4")==4)
-		{
+
+
+		if (statki.get("1") == 4 && statki.get("2") == 6 && statki.get("3") == 6 && statki.get("4") == 4) {
 			przeciwnikGrid.setDisable(true);
 			mojGrid.setDisable(true);
 			strzelajStatek.setDisable(true);
 			errorInfoDisplay.weryfikacjaTrafien(jaPrzeciwnik);
 			return true;
 		}
-		
+
 		return false;
 	}
 
 	/**
 	 * @param mess message send to another application
+	 * @param text textchat
 	 * @author Seweryn Czapiewski
 	 * weryfikacja method check whether picked field in enemy board contained ship or shoot was a miss
 	 */
@@ -735,14 +727,13 @@ public class ControlerClient {
 							client.send(mess);
 							soundPlayer.playSound(this.getClass().getClassLoader(), "view/hit.wav");
 						}
-						setImageEnemyShipHit(messZapas[0], messZapas[1],mojGrid);
-						if(!weryfikacjaIleStatkoTrafionych(but.getText().substring(1,2),statkiTrafioneMoje,false))
-						{
+						setImageEnemyShipHit(messZapas[0], messZapas[1], mojGrid);
+						if (!weryfikacjaIleStatkoTrafionych(but.getText().substring(1, 2), statkiTrafioneMoje, false)) {
 							errorInfoDisplay.youGotHitInfo();
 						}
 
 					} else {
-						
+
 						strzelajStatek.setDisable(false);
 
 						String mess = "#pudlo#" + messZapas[0] + "," + messZapas[1] + "$pudlo$";
@@ -753,7 +744,7 @@ public class ControlerClient {
 							client.send(mess);
 							soundPlayer.playSound(this.getClass().getClassLoader(), "view/miss.wav");
 						}
-						setImageEnemyShipNotHit(messZapas[0], messZapas[1],mojGrid);
+						setImageEnemyShipNotHit(messZapas[0], messZapas[1], mojGrid);
 
 						errorInfoDisplay.enemyMissInfo();
 					}
@@ -764,14 +755,13 @@ public class ControlerClient {
 
 				String[] messZapas = mess.substring(10, mess.length() - 13).split(",");
 				String jakiStatek = mess.substring(13, mess.length() - 10);
-				
+
 				((Button) getButtonByRowColumnIndex(Integer.parseInt(messZapas[0]), Integer.parseInt(messZapas[1]), przeciwnikGrid)).setText(jakiStatek);
-				setImageEnemyShipHit(messZapas[0], messZapas[1],przeciwnikGrid);
-				if(!weryfikacjaIleStatkoTrafionych(jakiStatek.substring(1,2),statkiTrafione,true))
-				{
-					errorInfoDisplay.youHitInfo();	
+				setImageEnemyShipHit(messZapas[0], messZapas[1], przeciwnikGrid);
+				if (!weryfikacjaIleStatkoTrafionych(jakiStatek.substring(1, 2), statkiTrafione, true)) {
+					errorInfoDisplay.youHitInfo();
 				}
-							
+
 
 			});
 		} else if (mess.indexOf("#pudlo#") != -1 && mess.indexOf("$pudlo$") != -1) {
@@ -780,23 +770,21 @@ public class ControlerClient {
 				strzelajStatek.setDisable(true);
 
 				String[] messZapas = mess.substring(7, mess.length() - 7).split(",");
-				
+
 				((Button) getButtonByRowColumnIndex(Integer.parseInt(messZapas[0]), Integer.parseInt(messZapas[1]), przeciwnikGrid)).setText("P");
-				setImageEnemyShipNotHit(messZapas[0], messZapas[1],przeciwnikGrid);
+				setImageEnemyShipNotHit(messZapas[0], messZapas[1], przeciwnikGrid);
 				errorInfoDisplay.youMissedInfo();
 			});
-		}
-		else if (mess.indexOf("#start#") != -1 && mess.indexOf("$start$") != -1) {
+		} else if (mess.indexOf("#start#") != -1 && mess.indexOf("$start$") != -1) {
 			Platform.runLater(() -> {
 
-				przeciwnikGotowy=true;
-				
-				if(jaGotowy)
-				{
+				przeciwnikGotowy = true;
+
+				if (jaGotowy) {
 					strzelajStatek.setDisable(false);
 				}
-				
-				
+
+
 				errorInfoDisplay.potwierdzeniePrzeciwnika();
 			});
 		}
@@ -808,7 +796,7 @@ public class ControlerClient {
 	 * @author Rafał Witkowski and Seweryn Czapiewski
 	 * setImageEnemyShipNotHit method set proper graphic for misses shoot at enemies board
 	 */
-	private void setImageEnemyShipNotHit(String rowMess, String colMess,GridPane jaPrzeciwnik) {
+	private void setImageEnemyShipNotHit(String rowMess, String colMess, GridPane jaPrzeciwnik) {
 		Integer row = Integer.valueOf(rowMess);
 		Integer col = Integer.valueOf(colMess);
 		Button button = (Button) getButtonByRowColumnIndex(row, col, jaPrzeciwnik);
@@ -823,7 +811,7 @@ public class ControlerClient {
 	 * @author Rafał Witkowski and Seweryn Czapiewski
 	 * setImageEnemyShipNotHit method set proper graphic for hit shoot at enemies board
 	 */
-	private void setImageEnemyShipHit(String rowMess, String colMess,GridPane jaPrzeciwnik) {
+	private void setImageEnemyShipHit(String rowMess, String colMess, GridPane jaPrzeciwnik) {
 		Integer row = Integer.valueOf(rowMess);
 		Integer col = Integer.valueOf(colMess);
 		Button button = (Button) getButtonByRowColumnIndex(row, col, jaPrzeciwnik);
@@ -859,17 +847,17 @@ public class ControlerClient {
 		statkiMap.put("3", 2);
 		statkiMap.put("4", 1);
 	}
-	
+
 	/**
 	 * @author Seweryn Czapiewski
-	 * Inicjowanie HashMapy odpowiedzialnej za trafione statki 
+	 * Inicjowanie HashMapy odpowiedzialnej za trafione statki
 	 **/
 	private void initStatkiTrafione() {
 		statkiTrafione.put("1", 0);
 		statkiTrafione.put("2", 0);
 		statkiTrafione.put("3", 0);
 		statkiTrafione.put("4", 0);
-		
+
 		statkiTrafioneMoje.put("1", 0);
 		statkiTrafioneMoje.put("2", 0);
 		statkiTrafioneMoje.put("3", 0);
@@ -911,7 +899,7 @@ public class ControlerClient {
 	private boolean validateHorizontalDeleteButtonAction(Integer row, Integer col) {
 		if (col - 1 > 0) {
 			Button button = (Button) getButtonByRowColumnIndex(row, col - 1, mojGrid);
-			if (button.getText().indexOf("-")!=-1) {
+			if (button.getText().indexOf("-") != -1) {
 				errorInfoDisplay.showNotStartOfAShip();
 				return true;
 			}
@@ -929,7 +917,7 @@ public class ControlerClient {
 	private boolean validateVerticalDeleteButtonAction(Integer row, Integer col) {
 		if (row - 1 > 0) {
 			Button button = (Button) getButtonByRowColumnIndex(row - 1, col, mojGrid);
-			if (button.getText().indexOf("|")!=-1) {
+			if (button.getText().indexOf("|") != -1) {
 				errorInfoDisplay.showNotStartOfAShip();
 				return true;
 			}
