@@ -166,4 +166,80 @@ public class ErrorInfoDisplay {
 				new ScrollPane(new TextArea("Statek nie może stykać się z innym statkiem")));
 		alert.showAndWait();
 	}
+	
+
+	/**
+	 * @author Seweryn Czapiewski
+	 * Alert w przypadku gdy przeciwnik ustawi wszystkie statki i potwierdzi gotowosc
+	 */
+	public void potwierdzeniePrzeciwnika() {
+
+		Alert alert = new Alert(Alert.AlertType.INFORMATION, "Przeciwnik potwierdza gotowość do gry !!!", ButtonType.CLOSE);
+		alert.showAndWait();
+	}
+	
+	/**
+	 * @author Seweryn Czapiewski
+	 * Alert w przypadku gdy gracz bedzie chcial rozpoczac gre a nie ustawi wszystkich okretow
+	 */
+	public void bladRozpoczecia() {
+
+		Alert alert1 = new Alert(Alert.AlertType.INFORMATION,"Należy wpowadzić wszystkie swoje statki !!!!", ButtonType.CLOSE);
+		alert1.showAndWait();
+	}
+	
+
+	/**
+	 * @author Seweryn Czapiewski
+	 * Alert rozpoczecia pojedynku w przypadku gdy przeciwnik szybciej kliknal przycisk start
+	 */
+	public void przeciwnikRozpoczyna() {
+
+		Alert alert2 = new Alert(Alert.AlertType.INFORMATION,"Rozpoczyna przeciwnik !!!!", ButtonType.CLOSE);
+		alert2.showAndWait();
+	}
+	
+	/**
+	 * @author Seweryn Czapiewski
+	 * Alert rozpoczecia pojedynku w przypadku gdy gracz szybciej kliknal przycisk start niz przeciwnik
+	 */
+	public void jaRozpoczynam() {
+
+
+		Alert alert2 = new Alert(Alert.AlertType.INFORMATION,"Rozpoczynasz grę czekaj na potwierdzenie od przeciwnika !!!!", ButtonType.CLOSE);
+		alert2.showAndWait();
+	}
+	
+	/**
+	 * @author Seweryn Czapiewski
+	 * Alert proba strzalu w to miejsce byla juz podejmowana
+	 */
+	public void strzalJuzByl() {
+
+
+		Alert alert2 = new Alert(Alert.AlertType.INFORMATION,"Już strzelałeś w to miejsce !!!!", ButtonType.CLOSE);
+		alert2.showAndWait();
+	}
+	
+	/**
+	 * @author Seweryn Czapiewski
+	 * Alert informujący o trafieniu wszystkich statków
+	 */
+	public void weryfikacjaTrafien(boolean jaPrzeciwnik)
+	{
+		
+
+if(jaPrzeciwnik)
+{
+
+	Alert alert2 = new Alert(Alert.AlertType.INFORMATION,"Koniec gry zniszczyłeś wszystkie statki przeciwnika !!!!", ButtonType.CLOSE);
+	alert2.showAndWait();
+}else
+{
+	Alert alert2 = new Alert(Alert.AlertType.INFORMATION,"Koniec gry przeciwnik zniszczył ci wszystkie statki !!!!", ButtonType.CLOSE);
+	alert2.showAndWait();
+	
+}
+
+	}
 }

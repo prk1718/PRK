@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.ControlerClient">
+<AnchorPane xmlns="http://javafx.com/javafx/8.0.161" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.ControlerClient">
   <children>
     <AnchorPane prefHeight="800.0" prefWidth="800.0">
       <children>
@@ -295,7 +295,7 @@
         </HBox>
         <HBox fx:id="HBoxUtils" layoutY="400.0" prefHeight="400.0" prefWidth="800.0">
           <children>
-                  <VBox prefHeight="400.0" prefWidth="283.0">
+                  <VBox fx:id="wstawianieStatkow" prefHeight="400.0" prefWidth="283.0">
                      <children>
                         <CheckBox fx:id="orientacja" layoutX="50.0" layoutY="110.0" mnemonicParsing="false" text="Orientacja">
                            <VBox.margin>
@@ -389,9 +389,19 @@
                         <Insets left="100.0" />
                      </HBox.margin>
                      <children>
-                        <Button fx:id="strzelajStatek" mnemonicParsing="false" onAction="#akcjaStrzelaj" prefHeight="94.0" prefWidth="101.0" text="STRZELAJ">
+                        <Button fx:id="strzelajStatek" disable="true" mnemonicParsing="false" onAction="#akcjaStrzelaj" prefHeight="94.0" prefWidth="101.0" text="STRZELAJ">
                            <VBox.margin>
-                              <Insets top="150.0" />
+                              <Insets top="35.0" />
+                           </VBox.margin>
+                        </Button>
+                        <Button fx:id="start" mnemonicParsing="false" onAction="#startGry" prefHeight="94.0" prefWidth="101.0" text="START">
+                           <VBox.margin>
+                              <Insets top="20.0" />
+                           </VBox.margin>
+                        </Button>
+                        <Button fx:id="nowaGra" mnemonicParsing="false" onAction="#nowaGierka" prefHeight="94.0" prefWidth="101.0" text="NOWA GRA">
+                           <VBox.margin>
+                              <Insets top="20.0" />
                            </VBox.margin>
                         </Button>
                      </children>

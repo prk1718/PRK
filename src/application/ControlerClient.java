@@ -9,7 +9,10 @@ import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -18,6 +21,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 
 /**
  * @author Seweryn Czapiewski and Rafał Witkowski
@@ -30,12 +34,14 @@ public class ControlerClient {
 	private boolean isAppServer;
 
 	public String[] getRowColMoj = new String[]{"", ""}, getRowColPrzeciwnik = new String[]{"", ""};
-	public Background backDefault = null;
 	private HashMap<String, Integer> statkiMap = new HashMap<>();
+	private HashMap<String, Integer> statkiTrafione = new HashMap<>();
+	private HashMap<String, Integer> statkiTrafioneMoje = new HashMap<>();
 	private HashMap<String, Integer> statkiPlacedMap = new HashMap<>();
 	private ArrayList<CheckBox> checkBoxArrayList = new ArrayList<>();
 	private ErrorInfoDisplay errorInfoDisplay = new ErrorInfoDisplay();
 	private SoundPlayer soundPlayer = new SoundPlayer();
+	private boolean jaGotowy=false,przeciwnikGotowy=false;
 
 	@FXML
 	private Button sendMessageButton;
@@ -61,6 +67,13 @@ public class ControlerClient {
 	private CheckBox jednoM;
 	@FXML
 	private CheckBox orientacja;
+	@FXML
+	private Button start;
+	@FXML
+	private Button strzelajStatek;
+	@FXML
+	private VBox wstawianieStatkow;
+	
 
 	/**
 	 * @author Seweryn Czapiewski and Rafał Witkowski
@@ -68,27 +81,104 @@ public class ControlerClient {
 	 */
 	@FXML
 	private void initialize() {
+		
 		initcheckBoxArrayList();
 		initButtonView();
 		initStatkiMap();
+		initStatkiTrafione();
 		initStatkiPlacedMap();
 		klikGridMojGetRowCol();
 		klikGridPrzeciwnikGetRowCol();
+		
 
-		new Thread(() -> {
-			try {
-
-				Thread.sleep(100);
-
-				Platform.runLater(() -> backDefault = ((Button) getButtonByRowColumnIndex(0, 1, mojGrid)).getBackground());
-
-			} catch (InterruptedException e) {
-
-			}
-
-		}).start();
 
 	}
+	
+	/**
+	 * @author Seweryn Czapiewski
+	 * Reset stanu gry
+	 */
+	@FXML
+	public void nowaGierka()
+	{
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle("Nowa Gra");
+		alert.setHeaderText("Info");
+		alert.setContentText("Rozpocząć nową grę ????");
+		alert.showAndWait().ifPresent(rs -> {
+		    if (rs == ButtonType.OK) {
+		    	
+				initButtonView();
+				initStatkiMap();
+				initStatkiPlacedMap();
+				setProperTextForCheckbox();
+				setRadioButtonsNotSelected();
+				strzelajStatek.setDisable(true);
+				start.setDisable(false);
+				jaGotowy=false;
+				przeciwnikGotowy=false;
+				wstawianieStatkow.setDisable(false);
+				przeciwnikGrid.setDisable(false);
+				mojGrid.setDisable(false);
+			
+
+		    }
+		});
+		
+	}
+	
+	/**
+	 * @author Seweryn Czapiewski
+	 * Rozpoczecie nowej gry
+	 */
+	@FXML
+	public void startGry()
+	{
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle("Start Gry");
+		alert.setHeaderText("Info");
+		alert.setContentText("Wystartować grę ????");
+		alert.showAndWait().ifPresent(rs -> {
+		
+		    if (rs == ButtonType.OK) {
+		    	
+		    	
+				if(statkiPlacedMap.get("1")==4&&statkiPlacedMap.get("2")==3&&statkiPlacedMap.get("3")==2&&statkiPlacedMap.get("4")==1)
+				{
+					jaGotowy=true;
+					start.setDisable(true);
+					wstawianieStatkow.setDisable(true);
+
+					
+					String message = "gotowy";
+					if (isAppServer) {
+						server.send("#start#" + message + "$start$");
+					} else {
+						client.send("#start#" + message + "$start$");
+					}
+					
+					if(przeciwnikGotowy)
+					{						
+						errorInfoDisplay.przeciwnikRozpoczyna();
+						
+					}else
+					{
+
+						errorInfoDisplay.jaRozpoczynam();				
+
+					}					
+					
+				}else
+				{
+					errorInfoDisplay.bladRozpoczecia();
+				}
+		    
+		    }
+		});
+		
+	}
+	
+	
 
 	/**
 	 * @author Rafał Witkowski
@@ -139,6 +229,7 @@ public class ControlerClient {
 		button.setStyle("-fx-border-style: none; -fx-border-width: 0px; -fx-border-insets: 0; -fx-font-size:1px; -fx-background-image: url('button.jpg')");
 		Image image = new Image(getClass().getResourceAsStream("../view/button.jpg"));
 		button.setGraphic(new ImageView(image));
+		button.setText("");
 
 	}
 
@@ -352,6 +443,7 @@ public class ControlerClient {
 	 */
 	@FXML
 	public void akcjaWstaw() {
+		
 		String selectedShipModel = getSelectedCheckboxValue();
 		if (checkBoxArrayList.stream().anyMatch(checkBox -> checkBox.isSelected()) && !selectedShipModel.equals("") && (!getRowColMoj[0].equals("") && !getRowColMoj[1].equals(""))) {
 			Integer howManyShipPlaced = statkiPlacedMap.get(selectedShipModel);
@@ -380,7 +472,7 @@ public class ControlerClient {
 								for (int i = row; i < row + howManyShipToPlace; i++) {
 									Button button = (Button) getButtonByRowColumnIndex(i, col, mojGrid);
 									setDisplayForPlacedShip(button);
-									button.setText("|");
+									button.setText("|"+selectedShipModel+statkiPlacedMap.get(selectedShipModel));
 								}
 							} else {
 								if (col + howManyShipToPlace > 10) {
@@ -390,7 +482,7 @@ public class ControlerClient {
 								for (int i = col; i < col + howManyShipToPlace; i++) {
 									Button button = (Button) getButtonByRowColumnIndex(row, i, mojGrid);
 									setDisplayForPlacedShip(button);
-									button.setText("-");
+									button.setText("-"+selectedShipModel+statkiPlacedMap.get(selectedShipModel));
 								}
 							}
 
@@ -453,19 +545,19 @@ public class ControlerClient {
 			String orientacjaStatku = ((Button) getButtonByRowColumnIndex(row, col, mojGrid)).getText();
 
 			for (int i = 0; i < 4; i++) {
-				if (orientacjaStatku.equals("|") && (row + i < 10)) {
+				if (orientacjaStatku.indexOf("|")!=-1 && (row + i < 10)) {
 					if (validateVerticalDeleteButtonAction(row, col))
 						return;
 					Button button = (Button) getButtonByRowColumnIndex(row + i, col, mojGrid);
-					if (button.getText().equals("|")) {
+					if (button.getText().indexOf("|")!=-1) {
 						setDefaultBackgroundAndTextForField(button);
 						count++;
 					}
-				} else if (orientacjaStatku.equals("-") && (col + i < 10)) {
+				} else if (orientacjaStatku.indexOf("-")!=-1 && (col + i < 10)) {
 					if (validateHorizontalDeleteButtonAction(row, col))
 						return;
 					Button button = (Button) getButtonByRowColumnIndex(row, col + i, mojGrid);
-					if (button.getText().equals("-")) {
+					if (button.getText().indexOf("-")!=-1) {
 						setDefaultBackgroundAndTextForField(button);
 						count++;
 					}
@@ -530,14 +622,26 @@ public class ControlerClient {
 	 */
 	@FXML
 	public void akcjaStrzelaj() {
+		
+		
 		String message = "#strzal#" + getRowColPrzeciwnik[0] + "," + getRowColPrzeciwnik[1] + "$strzal$";
 
 		if ((!getRowColPrzeciwnik[0].equals("") && !getRowColPrzeciwnik[1].equals(""))) {
-			if (isAppServer) {
-				server.send(message);
-			} else {
-				client.send(message);
+			
+			if(!((Button) getButtonByRowColumnIndex(Integer.parseInt(getRowColPrzeciwnik[0]), Integer.parseInt(getRowColPrzeciwnik[1]), przeciwnikGrid)).getText().equals(""))
+			{
+				errorInfoDisplay.strzalJuzByl();
+				
+			}else
+			{
+
+				if (isAppServer) {
+					server.send(message);
+				} else {
+					client.send(message);
+				}
 			}
+			
 
 			getRowColPrzeciwnik[0] = "";
 			getRowColPrzeciwnik[1] = "";
@@ -545,6 +649,61 @@ public class ControlerClient {
 		} else {
 			errorInfoDisplay.pickEnemyPositionInfo();
 		}
+	}
+	
+	/**
+	 * @author Seweryn Czapiewski
+	 * Weryfikacja trafionych statków przeciwnika
+	 */
+	public boolean weryfikacjaIleStatkoTrafionych(String trafiony,HashMap<String,Integer> statki,boolean jaPrzeciwnik)
+	{
+		switch(trafiony)
+		{
+		
+		case "1":
+			
+			Integer placed = statki.get("1") + 1;		
+			statki.replace("1", placed);
+					
+			break;
+			
+           case "2":
+			
+        		Integer placed1 = statki.get("2") + 1;		
+        		statki.replace("2", placed1);
+
+			break;
+			
+        case "3":
+	
+        	Integer placed2 = statki.get("3") + 1;		
+        	statki.replace("3", placed2);
+
+	        break;
+	        
+          case "4":
+	
+
+				Integer placed3 = statki.get("4") + 1;		
+				statki.replace("4", placed3);
+
+	        break;
+	        
+			default:
+				break;
+		}
+		
+		
+		if(statki.get("1")==4&&statki.get("2")==6&&statki.get("3")==6&&statki.get("4")==4)
+		{
+			przeciwnikGrid.setDisable(true);
+			mojGrid.setDisable(true);
+			strzelajStatek.setDisable(true);
+			errorInfoDisplay.weryfikacjaTrafien(jaPrzeciwnik);
+			return true;
+		}
+		
+		return false;
 	}
 
 	/**
@@ -564,10 +723,11 @@ public class ControlerClient {
 				public void run() {
 
 					String[] messZapas = mess.substring(8, mess.length() - 8).split(",");
+					Button but = ((Button) getButtonByRowColumnIndex(Integer.parseInt(messZapas[0]), Integer.parseInt(messZapas[1]), mojGrid));
 
-					if (!((Button) getButtonByRowColumnIndex(Integer.parseInt(messZapas[0]), Integer.parseInt(messZapas[1]), mojGrid)).getText().equals("")) {
+					if (!but.getText().equals("")) {
 
-						String mess = "#trafiony#" + messZapas[0] + "," + messZapas[1] + "$trafiony$";
+						String mess = "#trafiony#" + messZapas[0] + "," + messZapas[1] + but.getText() + "$trafiony$";
 						if (isAppServer) {
 							server.send(mess);
 							soundPlayer.playSound(this.getClass().getClassLoader(), "view/hit.wav");
@@ -575,10 +735,15 @@ public class ControlerClient {
 							client.send(mess);
 							soundPlayer.playSound(this.getClass().getClassLoader(), "view/hit.wav");
 						}
-						errorInfoDisplay.youGotHitInfo();
+						setImageEnemyShipHit(messZapas[0], messZapas[1],mojGrid);
+						if(!weryfikacjaIleStatkoTrafionych(but.getText().substring(1,2),statkiTrafioneMoje,false))
+						{
+							errorInfoDisplay.youGotHitInfo();
+						}
 
 					} else {
-						((Button) getButtonByRowColumnIndex(Integer.parseInt(messZapas[0]), Integer.parseInt(messZapas[1]), mojGrid)).setText("P");
+						
+						strzelajStatek.setDisable(false);
 
 						String mess = "#pudlo#" + messZapas[0] + "," + messZapas[1] + "$pudlo$";
 						if (isAppServer) {
@@ -588,6 +753,8 @@ public class ControlerClient {
 							client.send(mess);
 							soundPlayer.playSound(this.getClass().getClassLoader(), "view/miss.wav");
 						}
+						setImageEnemyShipNotHit(messZapas[0], messZapas[1],mojGrid);
+
 						errorInfoDisplay.enemyMissInfo();
 					}
 				}
@@ -595,19 +762,42 @@ public class ControlerClient {
 		} else if (mess.indexOf("#trafiony#") != -1 && mess.indexOf("$trafiony$") != -1) {
 			Platform.runLater(() -> {
 
-				String[] messZapas = mess.substring(10, mess.length() - 10).split(",");
+				String[] messZapas = mess.substring(10, mess.length() - 13).split(",");
+				String jakiStatek = mess.substring(13, mess.length() - 10);
+				
+				((Button) getButtonByRowColumnIndex(Integer.parseInt(messZapas[0]), Integer.parseInt(messZapas[1]), przeciwnikGrid)).setText(jakiStatek);
+				setImageEnemyShipHit(messZapas[0], messZapas[1],przeciwnikGrid);
+				if(!weryfikacjaIleStatkoTrafionych(jakiStatek.substring(1,2),statkiTrafione,true))
+				{
+					errorInfoDisplay.youHitInfo();	
+				}
+							
 
-				setImageEnemyShipHit(messZapas[0], messZapas[1]);
-				errorInfoDisplay.youHitInfo();
 			});
 		} else if (mess.indexOf("#pudlo#") != -1 && mess.indexOf("$pudlo$") != -1) {
 			Platform.runLater(() -> {
 
-				String[] messZapas = mess.substring(7, mess.length() - 7).split(",");
-				((Button) getButtonByRowColumnIndex(Integer.parseInt(messZapas[0]), Integer.parseInt(messZapas[1]), przeciwnikGrid)).setText("P");
+				strzelajStatek.setDisable(true);
 
-				setImageEnemyShipNotHit(messZapas[0], messZapas[1]);
+				String[] messZapas = mess.substring(7, mess.length() - 7).split(",");
+				
+				((Button) getButtonByRowColumnIndex(Integer.parseInt(messZapas[0]), Integer.parseInt(messZapas[1]), przeciwnikGrid)).setText("P");
+				setImageEnemyShipNotHit(messZapas[0], messZapas[1],przeciwnikGrid);
 				errorInfoDisplay.youMissedInfo();
+			});
+		}
+		else if (mess.indexOf("#start#") != -1 && mess.indexOf("$start$") != -1) {
+			Platform.runLater(() -> {
+
+				przeciwnikGotowy=true;
+				
+				if(jaGotowy)
+				{
+					strzelajStatek.setDisable(false);
+				}
+				
+				
+				errorInfoDisplay.potwierdzeniePrzeciwnika();
 			});
 		}
 	}
@@ -615,13 +805,13 @@ public class ControlerClient {
 	/**
 	 * @param colMess column of field which was shot
 	 * @param rowMess row of field which was shot
-	 * @author Rafał Witkowski
+	 * @author Rafał Witkowski and Seweryn Czapiewski
 	 * setImageEnemyShipNotHit method set proper graphic for misses shoot at enemies board
 	 */
-	private void setImageEnemyShipNotHit(String rowMess, String colMess) {
+	private void setImageEnemyShipNotHit(String rowMess, String colMess,GridPane jaPrzeciwnik) {
 		Integer row = Integer.valueOf(rowMess);
 		Integer col = Integer.valueOf(colMess);
-		Button button = (Button) getButtonByRowColumnIndex(row, col, przeciwnikGrid);
+		Button button = (Button) getButtonByRowColumnIndex(row, col, jaPrzeciwnik);
 		button.setStyle("-fx-border-style: none; -fx-border-width: 0px; -fx-border-insets: 0; -fx-font-size:1px; -fx-background-image: url('buttonPudlo.jpg')");
 		Image image = new Image(getClass().getResourceAsStream("../view/buttonPudlo.jpg"));
 		button.setGraphic(new ImageView(image));
@@ -630,13 +820,13 @@ public class ControlerClient {
 	/**
 	 * @param colMess column of field which was shot
 	 * @param rowMess row of field which was shot
-	 * @author Rafał Witkowski
+	 * @author Rafał Witkowski and Seweryn Czapiewski
 	 * setImageEnemyShipNotHit method set proper graphic for hit shoot at enemies board
 	 */
-	private void setImageEnemyShipHit(String rowMess, String colMess) {
+	private void setImageEnemyShipHit(String rowMess, String colMess,GridPane jaPrzeciwnik) {
 		Integer row = Integer.valueOf(rowMess);
 		Integer col = Integer.valueOf(colMess);
-		Button button = (Button) getButtonByRowColumnIndex(row, col, przeciwnikGrid);
+		Button button = (Button) getButtonByRowColumnIndex(row, col, jaPrzeciwnik);
 		button.setStyle("-fx-border-style: none; -fx-border-width: 0px; -fx-border-insets: 0; -fx-font-size:1px; -fx-background-image: url('enemyShipHit.jpg')");
 		Image image = new Image(getClass().getResourceAsStream("../view/enemyShipHit.jpg"));
 		button.setGraphic(new ImageView(image));
@@ -669,6 +859,22 @@ public class ControlerClient {
 		statkiMap.put("3", 2);
 		statkiMap.put("4", 1);
 	}
+	
+	/**
+	 * @author Seweryn Czapiewski
+	 * Inicjowanie HashMapy odpowiedzialnej za trafione statki 
+	 **/
+	private void initStatkiTrafione() {
+		statkiTrafione.put("1", 0);
+		statkiTrafione.put("2", 0);
+		statkiTrafione.put("3", 0);
+		statkiTrafione.put("4", 0);
+		
+		statkiTrafioneMoje.put("1", 0);
+		statkiTrafioneMoje.put("2", 0);
+		statkiTrafioneMoje.put("3", 0);
+		statkiTrafioneMoje.put("4", 0);
+	}
 
 	/**
 	 * @param button field for setting default graphic
@@ -699,13 +905,13 @@ public class ControlerClient {
 	 * @param row row of deleted field
 	 * @param col column of deleted field
 	 * @return boolean determines if ship can be deleted
-	 * @author Rafał Witkowski
+	 * @author Rafał Witkowski and Seweryn Czapiewski
 	 * validateHorizontalDeleteButtonAction method checks if a field is a part of horizontal ship and can be deleted
 	 */
 	private boolean validateHorizontalDeleteButtonAction(Integer row, Integer col) {
 		if (col - 1 > 0) {
 			Button button = (Button) getButtonByRowColumnIndex(row, col - 1, mojGrid);
-			if (button.getText().equals("-")) {
+			if (button.getText().indexOf("-")!=-1) {
 				errorInfoDisplay.showNotStartOfAShip();
 				return true;
 			}
@@ -717,13 +923,13 @@ public class ControlerClient {
 	 * @param row row of deleted field
 	 * @param col column of deleted field
 	 * @return boolean determines if ship can be deleted
-	 * @author Rafał Witkowski
+	 * @author Rafał Witkowski and Seweryn Czapiewski
 	 * validateVerticalDeleteButtonAction method checks if a field is a part of vertical ship and can be deleted
 	 */
 	private boolean validateVerticalDeleteButtonAction(Integer row, Integer col) {
 		if (row - 1 > 0) {
 			Button button = (Button) getButtonByRowColumnIndex(row - 1, col, mojGrid);
-			if (button.getText().equals("|")) {
+			if (button.getText().indexOf("|")!=-1) {
 				errorInfoDisplay.showNotStartOfAShip();
 				return true;
 			}
