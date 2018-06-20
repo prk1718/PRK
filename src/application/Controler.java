@@ -63,6 +63,7 @@ public class Controler {
 				cl.setServerClient(false, clientPort, ipAdress);
 				primaryStage.setScene(scene);
 				primaryStage.setTitle("Klient");
+				primaryStage.resizableProperty().setValue(Boolean.FALSE);
 				primaryStage.show();
 				main.primaryStage.close();
 
@@ -93,6 +94,7 @@ public class Controler {
 				cl.setServerClient(true, serverPort, null);
 				primaryStage.setScene(scene);
 				primaryStage.setTitle("Serwer");
+				primaryStage.resizableProperty().setValue(Boolean.FALSE);
 				primaryStage.show();
 
 				main.primaryStage.close();

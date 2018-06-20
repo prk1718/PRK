@@ -34,6 +34,8 @@ public class Main extends Application
 			Controler mainWinCon = loader.getController();
 			mainWinCon.setMain(this);
 			primaryStage.setScene(scene);
+			primaryStage.setTitle("GRA w STATKI");
+			primaryStage.resizableProperty().setValue(Boolean.FALSE);
 			primaryStage.show();
 
 		} catch (IOException ioe)
