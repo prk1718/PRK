@@ -1,32 +1,32 @@
 package application;
 
-import java.io.IOException;
-
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 
-public class Main extends Application
-{
+import java.io.IOException;
+
+public class Main extends Application {
 
 	public Stage primaryStage;
 
+	public static void main(String[] args) {
+		launch(args);
+	}
+
 	@Override
-	public void start(Stage primaryStage)
-	{
+	public void start(Stage primaryStage) {
 
 		this.primaryStage = primaryStage;
 		mainWindow();
 	}
 
-	public void mainWindow()
-	{
+	public void mainWindow() {
 		FXMLLoader loader = new FXMLLoader(Main.class.getResource("/view/mainwindow.fxml"));
 
-		try
-		{
+		try {
 			AnchorPane pane = loader.load();
 			primaryStage.setMinWidth(400.0);
 			primaryStage.setMinHeight(300.0);
@@ -38,14 +38,8 @@ public class Main extends Application
 			primaryStage.resizableProperty().setValue(Boolean.FALSE);
 			primaryStage.show();
 
-		} catch (IOException ioe)
-		{
+		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		}
-	}
-
-	public static void main(String[] args)
-	{
-		launch(args);
 	}
 }

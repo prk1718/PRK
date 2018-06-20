@@ -1,26 +1,20 @@
 package application;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-
-
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 
 /**
  * @author Seweryn Czapiewski and Rafał Witkowski
@@ -642,12 +636,12 @@ public class ControlerClient {
 	}
 
 	/**
-	 * @author Seweryn Czapiewski
-	 * @param trafiony Przypisany string do statku
-	 * @param statki Hashmapa statkow
+	 * @param trafiony     Przypisany string do statku
+	 * @param statki       Hashmapa statkow
 	 * @param jaPrzeciwnik czy gracz to przeciwnik
 	 * @return boolean
 	 * Weryfikacja trafionych statków przeciwnika
+	 * @author Seweryn Czapiewski
 	 */
 	public boolean weryfikacjaIleStatkoTrafionych(String trafiony, HashMap<String, Integer> statki, boolean jaPrzeciwnik) {
 		switch (trafiony) {

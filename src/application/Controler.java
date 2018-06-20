@@ -1,9 +1,5 @@
 package application;
 
-import java.net.ConnectException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -14,17 +10,20 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
+import java.net.ConnectException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class Controler {
 
+	private static String DEFAULT_IP_ADRESS = "127.0.0.1";
+	private static String DEFAULT_PORT = "3343";
 	private Main main;
 	private String clientPort;
 	private String serverPort;
 	private String ipAdress;
-
 	private String regexForPort = "^([0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$";
 	private String regexForIP = "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$";
-	private static String DEFAULT_IP_ADRESS = "127.0.0.1";
-	private static String DEFAULT_PORT = "3343";
 	private ErrorInfoDisplay errorInfoDisplay = new ErrorInfoDisplay();
 
 	@FXML

@@ -166,7 +166,7 @@ public class ErrorInfoDisplay {
 				new ScrollPane(new TextArea("Statek nie może stykać się z innym statkiem")));
 		alert.showAndWait();
 	}
-	
+
 
 	/**
 	 * @author Seweryn Czapiewski
@@ -177,17 +177,17 @@ public class ErrorInfoDisplay {
 		Alert alert = new Alert(Alert.AlertType.INFORMATION, "Przeciwnik potwierdza gotowość do gry !!!", ButtonType.CLOSE);
 		alert.showAndWait();
 	}
-	
+
 	/**
 	 * @author Seweryn Czapiewski
 	 * Alert w przypadku gdy gracz bedzie chcial rozpoczac gre a nie ustawi wszystkich okretow
 	 */
 	public void bladRozpoczecia() {
 
-		Alert alert1 = new Alert(Alert.AlertType.INFORMATION,"Należy wpowadzić wszystkie swoje statki !!!!", ButtonType.CLOSE);
+		Alert alert1 = new Alert(Alert.AlertType.INFORMATION, "Należy wpowadzić wszystkie swoje statki !!!!", ButtonType.CLOSE);
 		alert1.showAndWait();
 	}
-	
+
 
 	/**
 	 * @author Seweryn Czapiewski
@@ -195,10 +195,10 @@ public class ErrorInfoDisplay {
 	 */
 	public void przeciwnikRozpoczyna() {
 
-		Alert alert2 = new Alert(Alert.AlertType.INFORMATION,"Rozpoczyna przeciwnik !!!!", ButtonType.CLOSE);
+		Alert alert2 = new Alert(Alert.AlertType.INFORMATION, "Rozpoczyna przeciwnik !!!!", ButtonType.CLOSE);
 		alert2.showAndWait();
 	}
-	
+
 	/**
 	 * @author Seweryn Czapiewski
 	 * Alert rozpoczecia pojedynku w przypadku gdy gracz szybciej kliknal przycisk start niz przeciwnik
@@ -206,10 +206,10 @@ public class ErrorInfoDisplay {
 	public void jaRozpoczynam() {
 
 
-		Alert alert2 = new Alert(Alert.AlertType.INFORMATION,"Rozpoczynasz grę czekaj na potwierdzenie od przeciwnika !!!!", ButtonType.CLOSE);
+		Alert alert2 = new Alert(Alert.AlertType.INFORMATION, "Rozpoczynasz grę czekaj na potwierdzenie od przeciwnika !!!!", ButtonType.CLOSE);
 		alert2.showAndWait();
 	}
-	
+
 	/**
 	 * @author Seweryn Czapiewski
 	 * Alert proba strzalu w to miejsce byla juz podejmowana
@@ -217,30 +217,27 @@ public class ErrorInfoDisplay {
 	public void strzalJuzByl() {
 
 
-		Alert alert2 = new Alert(Alert.AlertType.INFORMATION,"Już strzelałeś w to miejsce !!!!", ButtonType.CLOSE);
+		Alert alert2 = new Alert(Alert.AlertType.INFORMATION, "Już strzelałeś w to miejsce !!!!", ButtonType.CLOSE);
 		alert2.showAndWait();
 	}
-	
+
 	/**
+	 * @param jaPrzeciwnik czy gracz to przeciwnik
 	 * @author Seweryn Czapiewski
 	 * Alert informujący o trafieniu wszystkich statków
-	 * @param jaPrzeciwnik czy gracz to przeciwnik
 	 */
-	public void weryfikacjaTrafien(boolean jaPrzeciwnik)
-	{
-		
+	public void weryfikacjaTrafien(boolean jaPrzeciwnik) {
 
-if(jaPrzeciwnik)
-{
 
-	Alert alert2 = new Alert(Alert.AlertType.INFORMATION,"Koniec gry zniszczyłeś wszystkie statki przeciwnika !!!!", ButtonType.CLOSE);
-	alert2.showAndWait();
-}else
-{
-	Alert alert2 = new Alert(Alert.AlertType.INFORMATION,"Koniec gry przeciwnik zniszczył ci wszystkie statki !!!!", ButtonType.CLOSE);
-	alert2.showAndWait();
-	
-}
+		if (jaPrzeciwnik) {
+
+			Alert alert2 = new Alert(Alert.AlertType.INFORMATION, "Koniec gry zniszczyłeś wszystkie statki przeciwnika !!!!", ButtonType.CLOSE);
+			alert2.showAndWait();
+		} else {
+			Alert alert2 = new Alert(Alert.AlertType.INFORMATION, "Koniec gry przeciwnik zniszczył ci wszystkie statki !!!!", ButtonType.CLOSE);
+			alert2.showAndWait();
+
+		}
 
 	}
 }

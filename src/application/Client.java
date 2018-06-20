@@ -1,10 +1,14 @@
 package application;
 
-import java.io.*;
-import java.net.*;
-
 import javafx.application.Platform;
 import javafx.scene.control.TextArea;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.net.InetAddress;
+import java.net.Socket;
 
 public class Client {
 	private static Socket clientSocket;

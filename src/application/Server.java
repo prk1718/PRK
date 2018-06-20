@@ -1,18 +1,23 @@
 package application;
 
-import java.io.*;
-import java.net.*;
-
 import javafx.application.Platform;
 import javafx.scene.control.TextArea;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.net.BindException;
+import java.net.ServerSocket;
+import java.net.Socket;
 
 public class Server {
 	private static ServerSocket serverSocket;
 	private static Socket socket;
+	private static ErrorInfoDisplay errorInfoDisplay = new ErrorInfoDisplay();
 	private BufferedReader inputReader;
 	private PrintStream outputPrinter;
 	private String textOdb = "";
-	private static ErrorInfoDisplay errorInfoDisplay = new ErrorInfoDisplay();
 
 	public Server(TextArea text, String portAdress, ControlerClient controler) {
 
