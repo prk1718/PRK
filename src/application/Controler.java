@@ -1,6 +1,7 @@
 package application;
 
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -9,6 +10,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.net.ConnectException;
 import java.util.regex.Matcher;
@@ -54,7 +56,8 @@ public class Controler {
 			primaryStage.setMinWidth(800.0);
 			primaryStage.setMinHeight(800.0);
 			Scene scene = new Scene(pane);
-			BackgroundImage bi = new BackgroundImage(new Image("view/background.jpg", 750, 750, false, true), BackgroundRepeat.ROUND, BackgroundRepeat.ROUND, BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
+			Image im = new Image(getClass().getResourceAsStream("/view/background.jpg"), 750, 750, false, true);
+			BackgroundImage bi = new BackgroundImage(im, BackgroundRepeat.ROUND, BackgroundRepeat.ROUND, BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
 			pane.setBackground(new Background(bi));
 			ControlerClient cl = loader.getController();
 			getConnectionParametersForClient();
@@ -63,8 +66,24 @@ public class Controler {
 				primaryStage.setScene(scene);
 				primaryStage.setTitle("Klient");
 				primaryStage.resizableProperty().setValue(Boolean.FALSE);
+				primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+					
+			          public void handle(WindowEvent we) {
+			              try
+			              {
+			            	  System.exit(0);
+			            	  
+								
+			              }catch(Exception e)
+			              {
+			            	  
+			              }
+			          }
+			      }); 
+				
 				primaryStage.show();
-				main.primaryStage.close();
+				
+			    main.primaryStage.close();
 
 			} else {
 				Platform.runLater(() -> errorInfoDisplay.cannotConnectToServer());
@@ -85,7 +104,8 @@ public class Controler {
 			primaryStage.setMinWidth(800.0);
 			primaryStage.setMinHeight(800.0);
 			Scene scene = new Scene(pane);
-			BackgroundImage bi = new BackgroundImage(new Image("view/background.jpg", 750, 750, false, true), BackgroundRepeat.ROUND, BackgroundRepeat.ROUND, BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
+			Image im = new Image(getClass().getResourceAsStream("/view/background.jpg"), 750, 750, false, true);
+			BackgroundImage bi = new BackgroundImage(im, BackgroundRepeat.ROUND, BackgroundRepeat.ROUND, BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
 			pane.setBackground(new Background(bi));
 			ControlerClient cl = loader.getController();
 			getConnectionParametersForServer();
@@ -94,6 +114,21 @@ public class Controler {
 				primaryStage.setScene(scene);
 				primaryStage.setTitle("Serwer");
 				primaryStage.resizableProperty().setValue(Boolean.FALSE);
+				primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+					
+			          public void handle(WindowEvent we) {
+			              try
+			              {
+			            	  System.exit(0);
+			            	  
+								
+			              }catch(Exception e)
+			              {
+			            	  
+			              }
+			          }
+			      }); 
+				
 				primaryStage.show();
 
 				main.primaryStage.close();

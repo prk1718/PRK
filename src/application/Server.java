@@ -12,16 +12,17 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Server {
-	private static ServerSocket serverSocket;
-	private static Socket socket;
+	public static ServerSocket serverSocket;
+	public static Socket socket;
 	private static ErrorInfoDisplay errorInfoDisplay = new ErrorInfoDisplay();
-	private BufferedReader inputReader;
-	private PrintStream outputPrinter;
+	public static BufferedReader inputReader;
+	public static PrintStream outputPrinter;
 	private String textOdb = "";
+	public static Thread th=null;
 
 	public Server(TextArea text, String portAdress, ControlerClient controler) {
 
-		new Thread(() -> {
+		th = new Thread(() -> {
 			try {
 				socket = serverSocket.accept();
 				inputReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -36,14 +37,28 @@ public class Server {
 					}
 				}
 			} catch (BindException be) {
+				
+				try {
+				   
+					socket.close();
+					inputReader.close();
+					outputPrinter.close();
+					serverSocket.close();
+
+					
+				} catch (Exception e) {}
+				
 				be.printStackTrace();
 				System.out.println("Server uległ awarii");
 				Platform.runLater(() -> errorInfoDisplay.serverCrashed());
+				
 			} catch (IOException ioe) {
 				ioe.printStackTrace();
 			}
 
-		}).start();
+		});
+		
+		th.start();
 	}
 
 	public static boolean sprSvr(String portAdress) {

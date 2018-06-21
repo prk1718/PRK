@@ -213,7 +213,7 @@ public class ControlerClient {
 	private void setImageAsBackground(Node node) {
 		Button button = (Button) node;
 		button.setStyle("-fx-border-style: none; -fx-border-width: 0px; -fx-border-insets: 0; -fx-font-size:1px; -fx-background-image: url('button.jpg')");
-		Image image = new Image(getClass().getResourceAsStream("../view/button.jpg"));
+		Image image = new Image(getClass().getResourceAsStream("/view/button.jpg"));
 		button.setGraphic(new ImageView(image));
 		button.setText("");
 
@@ -499,7 +499,7 @@ public class ControlerClient {
 					Button button = (Button) getButtonByRowColumnIndex(i, j, mojGrid);
 					if (button.getText().equals("")) {
 						button.setStyle("-fx-border-style: none; -fx-border-width: 0px; -fx-border-insets: 0; -fx-font-size:1px; -fx-background-image: url('placingShipNotPossible.jpg')");
-						Image image = new Image(getClass().getResourceAsStream("../view/placingShipNotPossible.jpg"));
+						Image image = new Image(getClass().getResourceAsStream("/view/placingShipNotPossible.jpg"));
 						button.setGraphic(new ImageView(image));
 					}
 				}
@@ -514,7 +514,7 @@ public class ControlerClient {
 	 */
 	private void setDisplayForPlacedShip(Button button) {
 		button.setStyle("-fx-border-style: none; -fx-border-width: 0px; -fx-border-insets: 0; -fx-font-size:1px; -fx-background-image: url('button.jpg')");
-		Image image = new Image(getClass().getResourceAsStream("../view/ship.jpg"));
+		Image image = new Image(getClass().getResourceAsStream("/view/ship.jpg"));
 		button.setGraphic(new ImageView(image));
 	}
 
@@ -795,7 +795,7 @@ public class ControlerClient {
 		Integer col = Integer.valueOf(colMess);
 		Button button = (Button) getButtonByRowColumnIndex(row, col, jaPrzeciwnik);
 		button.setStyle("-fx-border-style: none; -fx-border-width: 0px; -fx-border-insets: 0; -fx-font-size:1px; -fx-background-image: url('buttonPudlo.jpg')");
-		Image image = new Image(getClass().getResourceAsStream("../view/buttonPudlo.jpg"));
+		Image image = new Image(getClass().getResourceAsStream("/view/buttonPudlo.jpg"));
 		button.setGraphic(new ImageView(image));
 	}
 
@@ -810,7 +810,7 @@ public class ControlerClient {
 		Integer col = Integer.valueOf(colMess);
 		Button button = (Button) getButtonByRowColumnIndex(row, col, jaPrzeciwnik);
 		button.setStyle("-fx-border-style: none; -fx-border-width: 0px; -fx-border-insets: 0; -fx-font-size:1px; -fx-background-image: url('enemyShipHit.jpg')");
-		Image image = new Image(getClass().getResourceAsStream("../view/enemyShipHit.jpg"));
+		Image image = new Image(getClass().getResourceAsStream("/view/enemyShipHit.jpg"));
 		button.setGraphic(new ImageView(image));
 	}
 
@@ -866,7 +866,7 @@ public class ControlerClient {
 	 */
 	private void setDefaultBackgroundForField(Button button) {
 		button.setStyle("-fx-border-style: none; -fx-border-width: 0px; -fx-border-insets: 0; -fx-font-size:1px; -fx-background-image: url('button.jpg')");
-		Image image = new Image(getClass().getResourceAsStream("../view/button.jpg"));
+		Image image = new Image(getClass().getResourceAsStream("/view/button.jpg"));
 		button.setGraphic(new ImageView(image));
 	}
 
@@ -878,7 +878,7 @@ public class ControlerClient {
 	 */
 	private void setDefaultBackgroundAndTextForField(Button button) {
 		button.setStyle("-fx-border-style: none; -fx-border-width: 0px; -fx-border-insets: 0; -fx-font-size:1px; -fx-background-image: url('button.jpg')");
-		Image image = new Image(getClass().getResourceAsStream("../view/button.jpg"));
+		Image image = new Image(getClass().getResourceAsStream("/view/button.jpg"));
 		button.setText("");
 		button.setGraphic(new ImageView(image));
 	}

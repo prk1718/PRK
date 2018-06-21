@@ -1,10 +1,12 @@
 package application;
 
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.io.IOException;
 
@@ -36,6 +38,21 @@ public class Main extends Application {
 			primaryStage.setScene(scene);
 			primaryStage.setTitle("GRA w STATKI");
 			primaryStage.resizableProperty().setValue(Boolean.FALSE);
+			primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+				
+		          public void handle(WindowEvent we) {
+		              try
+		              {
+		            	  System.exit(0);
+		            	  
+							
+		              }catch(Exception e)
+		              {
+		            	  
+		              }
+		          }
+		      }); 
+			
 			primaryStage.show();
 
 		} catch (IOException ioe) {
