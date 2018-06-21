@@ -10,6 +10,8 @@ import javafx.stage.WindowEvent;
 
 import java.io.IOException;
 
+import controller.Controler;
+
 public class Main extends Application {
 
 	public Stage primaryStage;

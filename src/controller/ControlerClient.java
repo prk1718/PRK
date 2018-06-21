@@ -1,4 +1,4 @@
-package application;
+package controller;
 
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -15,6 +15,11 @@ import javafx.scene.layout.VBox;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+
+import application.Client;
+import application.ErrorInfoDisplay;
+import application.Server;
+import application.SoundPlayer;
 
 /**
  * @author Seweryn Czapiewski and Rafał Witkowski

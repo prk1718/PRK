@@ -1,4 +1,4 @@
-package application;
+package controller;
 
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -15,6 +15,11 @@ import javafx.stage.WindowEvent;
 import java.net.ConnectException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import application.Client;
+import application.ErrorInfoDisplay;
+import application.Main;
+import application.Server;
 
 public class Controler {
 
@@ -48,7 +53,7 @@ public class Controler {
 
 	@FXML
 	public void loadClientButton() {
-		FXMLLoader loader = new FXMLLoader(Main.class.getResource("/controller/client.fxml"));
+		FXMLLoader loader = new FXMLLoader(Main.class.getResource("/view/client.fxml"));
 
 		try {
 			Stage primaryStage = new Stage();
@@ -95,7 +100,7 @@ public class Controler {
 
 	@FXML
 	public void loadServerButton() {
-		FXMLLoader loader = new FXMLLoader(Main.class.getResource("/controller/client.fxml"));
+		FXMLLoader loader = new FXMLLoader(Main.class.getResource("/view/client.fxml"));
 
 		try {
 

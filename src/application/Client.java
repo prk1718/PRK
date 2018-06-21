@@ -10,6 +10,8 @@ import java.io.PrintStream;
 import java.net.InetAddress;
 import java.net.Socket;
 
+import controller.ControlerClient;
+
 public class Client {
 	private static Socket clientSocket;
 	private BufferedReader inputReader;
